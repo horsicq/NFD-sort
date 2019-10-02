@@ -52,6 +52,7 @@ private slots:
 
     quint32 getFileCount(quint32 nCRC);
     void setFileCount(quint32 nCRC,quint32 nCount);
+    void setFileStat(QString sFileName,qint64 nTimeCount);
 
     void on_checkBoxAllFileTypes_toggled(bool checked);
     void on_checkBoxBinary_toggled(bool checked);
@@ -90,6 +91,7 @@ private slots:
     void on_checkBoxTool_toggled(bool checked);
     void on_pushButtonInfo_clicked();
 
+    void scanFileStarted(QString sFileName);
     void scanResult(SpecAbstract::SCAN_RESULT scanResult);
 
 private:

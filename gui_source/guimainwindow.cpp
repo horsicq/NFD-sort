@@ -93,7 +93,9 @@ void GuiMainWindow::_scan()
 {
     QSqlQuery srcQuery(dbSQLLite);
     srcQuery.exec("DROP TABLE if exists records");
+    srcQuery.exec("DROP TABLE if exists files");
     srcQuery.exec("CREATE TABLE if not exists records(FILECRC text,FILECOUNT text,PRIMARY KEY(FILECRC))");
+    srcQuery.exec("CREATE TABLE if not exists files(FILENAME text,TIMECOUNT text,DATETIME text,PRIMARY KEY(FILENAME))");
 
     nCopyCount=ui->spinBoxCopyCount->value();
     sResultDirectory=ui->lineEditOut->text();
@@ -143,6 +145,7 @@ void GuiMainWindow::_scan()
     options.bSubdirectories=ui->checkBoxScanSubdirectories->isChecked();
 
     DialogStaticScan ds(this);
+    connect(&ds, SIGNAL(scanFileStarted(QString)),this,SLOT(scanFileStarted(QString)),Qt::DirectConnection);
     connect(&ds, SIGNAL(scanResult(SpecAbstract::SCAN_RESULT)),this,SLOT(scanResult(SpecAbstract::SCAN_RESULT)),Qt::DirectConnection);
     ds.setData(ui->lineEditDirectoryName->text(),&options);
     ds.exec();
@@ -175,6 +178,22 @@ void GuiMainWindow::setFileCount(quint32 nCRC, quint32 nCount)
     QSqlQuery query(dbSQLLite);
 
     query.exec(QString("INSERT OR REPLACE INTO records(FILECRC,FILECOUNT) VALUES('%1','%2')").arg(nCRC).arg(nCount));
+
+    if(query.lastError().text().trimmed()!="")
+    {
+        qDebug(query.lastQuery().toLatin1().data());
+        qDebug(query.lastError().text().toLatin1().data());
+    }
+}
+
+void GuiMainWindow::setFileStat(QString sFileName, qint64 nTimeCount)
+{
+    QSqlQuery query(dbSQLLite);
+
+    query.exec(QString("INSERT OR REPLACE INTO files(FILENAME,TIMECOUNT,DATETIME) VALUES('%1','%2','%3')")
+               .arg(sFileName)
+               .arg(nTimeCount)
+               .arg(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss")));
 
     if(query.lastError().text().trimmed()!="")
     {
@@ -559,6 +578,11 @@ void GuiMainWindow::on_pushButtonInfo_clicked()
     QMessageBox::information(this,tr("Info"),tr("Bugreports: horsicq@gmail.com"));
 }
 
+void GuiMainWindow::scanFileStarted(QString sFileName)
+{
+    setFileStat(sFileName,0);
+}
+
 void GuiMainWindow::scanResult(SpecAbstract::SCAN_RESULT scanResult)
 {
     int nCount=scanResult.listRecords.count();
@@ -613,6 +637,7 @@ void GuiMainWindow::scanResult(SpecAbstract::SCAN_RESULT scanResult)
                 if(XBinary::copyFile(scanResult.sFileName,sFileName))
                 {
                     setFileCount(nCRC,nCurrentCount+1);
+                    setFileStat(scanResult.sFileName,scanResult.nScanTime);
                 }
             }
         }
