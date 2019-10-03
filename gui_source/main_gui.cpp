@@ -39,9 +39,9 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName(X_APPLICATIONNAME);
     QCoreApplication::setApplicationVersion(X_APPLICATIONVERSION);
 
+    QApplication a(argc, argv);
     QApplication::setStyle(QStyleFactory::create("Fusion"));
 
-    QApplication a(argc, argv);
     GuiMainWindow w;
     w.show();
 

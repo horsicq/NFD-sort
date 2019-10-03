@@ -7,14 +7,19 @@ TEMPLATE = app
 
 SOURCES += \
         guimainwindow.cpp \
-        main_gui.cpp
+        main_gui.cpp \
+    dialogscanprogress.cpp \
+    scanprogress.cpp
 
 HEADERS += \
         guimainwindow.h \
-    ../global.h
+    ../global.h \
+    dialogscanprogress.h \
+    scanprogress.h
 
 FORMS += \
-        guimainwindow.ui
+        guimainwindow.ui \
+    dialogscanprogress.ui
 
 !contains(XCONFIG, formresult) {
     XCONFIG += formresult

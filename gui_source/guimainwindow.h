@@ -26,10 +26,8 @@
 #include <QMainWindow>
 #include <QFileDialog>
 #include <QMessageBox>
-#include <QSqlDatabase>
-#include <QSqlError>
-#include <QSqlQuery>
-#include "dialogstaticscan.h"
+#include "dialogscanprogress.h"
+#include "staticscan.h"
 
 namespace Ui {
 class GuiMainWindow;
@@ -49,10 +47,6 @@ private slots:
     void on_pushButtonOut_clicked();
     void on_pushButtonScan_clicked();
     void _scan();
-
-    quint32 getFileCount(quint32 nCRC);
-    void setFileCount(quint32 nCRC,quint32 nCount);
-    void setFileStat(QString sFileName,qint64 nTimeCount);
 
     void on_checkBoxAllFileTypes_toggled(bool checked);
     void on_checkBoxBinary_toggled(bool checked);
@@ -91,17 +85,10 @@ private slots:
     void on_checkBoxTool_toggled(bool checked);
     void on_pushButtonInfo_clicked();
 
-    void scanFileStarted(QString sFileName);
-    void scanResult(SpecAbstract::SCAN_RESULT scanResult);
-
 private:
     Ui::GuiMainWindow *ui;
 
-    QSet<SpecAbstract::RECORD_FILETYPE> stFileTypes;
-    QSet<SpecAbstract::RECORD_TYPE> stTypes;
-    qint32 nCopyCount;
-    QString sResultDirectory;
-    QSqlDatabase dbSQLLite;
+    ScanProgress::SCAN_OPTIONS options;
 };
 
 #endif // GUIMAINWINDOW_H

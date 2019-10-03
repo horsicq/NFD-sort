@@ -36,14 +36,12 @@ GuiMainWindow::GuiMainWindow(QWidget *parent) :
     ui->lineEditDirectoryName->setText(QDir::currentPath());
     ui->lineEditOut->setText(QDir::currentPath());
 
-    nCopyCount=0;
+    options={0};
 
-    dbSQLLite;
+    QString sDatabaseName=":memory:";
+    options.bContinue=false;
 
-    dbSQLLite=QSqlDatabase::addDatabase("QSQLITE", "sqllite");
-    dbSQLLite.setDatabaseName(":memory:");
-
-    if(!dbSQLLite.open())
+    if(!ScanProgress::createDatabase(&options.dbSQLLite,sDatabaseName))
     {
         QMessageBox::critical(this,tr("Error"),tr("Cannot open SQLITE database"));
         exit(1);
@@ -91,115 +89,63 @@ void GuiMainWindow::on_pushButtonScan_clicked()
 
 void GuiMainWindow::_scan()
 {
-    QSqlQuery srcQuery(dbSQLLite);
-    srcQuery.exec("DROP TABLE if exists records");
-    srcQuery.exec("DROP TABLE if exists files");
-    srcQuery.exec("CREATE TABLE if not exists records(FILECRC text,FILECOUNT text,PRIMARY KEY(FILECRC))");
-    srcQuery.exec("CREATE TABLE if not exists files(FILENAME text,TIMECOUNT text,DATETIME text,PRIMARY KEY(FILENAME))");
+    options.nCopyCount=ui->spinBoxCopyCount->value();
+    options.sResultDirectory=ui->lineEditOut->text();
 
-    nCopyCount=ui->spinBoxCopyCount->value();
-    sResultDirectory=ui->lineEditOut->text();
+    options.stFileTypes.clear();
 
-    stFileTypes.clear();
+    if(ui->checkBoxBinary->isChecked())             options.stFileTypes.insert(SpecAbstract::RECORD_FILETYPE_BINARY);
+    if(ui->checkBoxMSDOS->isChecked())              options.stFileTypes.insert(SpecAbstract::RECORD_FILETYPE_MSDOS);
+    if(ui->checkBoxPE32->isChecked())               options.stFileTypes.insert(SpecAbstract::RECORD_FILETYPE_PE32);
+    if(ui->checkBoxPE64->isChecked())               options.stFileTypes.insert(SpecAbstract::RECORD_FILETYPE_PE64);
+    if(ui->checkBoxELF32->isChecked())              options.stFileTypes.insert(SpecAbstract::RECORD_FILETYPE_ELF32);
+    if(ui->checkBoxELF64->isChecked())              options.stFileTypes.insert(SpecAbstract::RECORD_FILETYPE_ELF64);
+    if(ui->checkBoxMACHO32->isChecked())            options.stFileTypes.insert(SpecAbstract::RECORD_FILETYPE_MACH32);
+    if(ui->checkBoxMACHO64->isChecked())            options.stFileTypes.insert(SpecAbstract::RECORD_FILETYPE_MACH64);
 
-    if(ui->checkBoxBinary->isChecked())             stFileTypes.insert(SpecAbstract::RECORD_FILETYPE_BINARY);
-    if(ui->checkBoxMSDOS->isChecked())              stFileTypes.insert(SpecAbstract::RECORD_FILETYPE_MSDOS);
-    if(ui->checkBoxPE32->isChecked())               stFileTypes.insert(SpecAbstract::RECORD_FILETYPE_PE32);
-    if(ui->checkBoxPE64->isChecked())               stFileTypes.insert(SpecAbstract::RECORD_FILETYPE_PE64);
-    if(ui->checkBoxELF32->isChecked())              stFileTypes.insert(SpecAbstract::RECORD_FILETYPE_ELF32);
-    if(ui->checkBoxELF64->isChecked())              stFileTypes.insert(SpecAbstract::RECORD_FILETYPE_ELF64);
-    if(ui->checkBoxMACHO32->isChecked())            stFileTypes.insert(SpecAbstract::RECORD_FILETYPE_MACH32);
-    if(ui->checkBoxMACHO64->isChecked())            stFileTypes.insert(SpecAbstract::RECORD_FILETYPE_MACH64);
+    options.stTypes.clear();
 
-    stTypes.clear();
+    if(ui->checkBoxArchive->isChecked())            options.stTypes.insert(SpecAbstract::RECORD_TYPE_ARCHIVE);
+    if(ui->checkBoxCertificate->isChecked())        options.stTypes.insert(SpecAbstract::RECORD_TYPE_CERTIFICATE);
+    if(ui->checkBoxCompiler->isChecked())           options.stTypes.insert(SpecAbstract::RECORD_TYPE_COMPILER);
+    if(ui->checkBoxConverter->isChecked())          options.stTypes.insert(SpecAbstract::RECORD_TYPE_CONVERTER);
+    if(ui->checkBoxDatabase->isChecked())           options.stTypes.insert(SpecAbstract::RECORD_TYPE_DATABASE);
+    if(ui->checkBoxDebugData->isChecked())          options.stTypes.insert(SpecAbstract::RECORD_TYPE_DEBUGDATA);
+    if(ui->checkBoxDongleProtection->isChecked())   options.stTypes.insert(SpecAbstract::RECORD_TYPE_DONGLEPROTECTION);
+    if(ui->checkBoxDOSExtender->isChecked())        options.stTypes.insert(SpecAbstract::RECORD_TYPE_DOSEXTENDER);
+    if(ui->checkBoxFormat->isChecked())             options.stTypes.insert(SpecAbstract::RECORD_TYPE_FORMAT);
+    if(ui->checkBoxGeneric->isChecked())            options.stTypes.insert(SpecAbstract::RECORD_TYPE_GENERIC);
+    if(ui->checkBoxImage->isChecked())              options.stTypes.insert(SpecAbstract::RECORD_TYPE_IMAGE);
+    if(ui->checkBoxInstaller->isChecked())          options.stTypes.insert(SpecAbstract::RECORD_TYPE_INSTALLER);
+    if(ui->checkBoxInstallerData->isChecked())      options.stTypes.insert(SpecAbstract::RECORD_TYPE_INSTALLERDATA);
+    if(ui->checkBoxLibrary->isChecked())            options.stTypes.insert(SpecAbstract::RECORD_TYPE_LIBRARY);
+    if(ui->checkBoxLinker->isChecked())             options.stTypes.insert(SpecAbstract::RECORD_TYPE_LINKER);
+    if(ui->checkBoxNETObfuscator->isChecked())      options.stTypes.insert(SpecAbstract::RECORD_TYPE_NETOBFUSCATOR);
+    if(ui->checkBoxPacker->isChecked())             options.stTypes.insert(SpecAbstract::RECORD_TYPE_PACKER);
+    if(ui->checkBoxProtector->isChecked())          options.stTypes.insert(SpecAbstract::RECORD_TYPE_PROTECTOR);
+    if(ui->checkBoxProtectorData->isChecked())      options.stTypes.insert(SpecAbstract::RECORD_TYPE_PROTECTORDATA);
+    if(ui->checkBoxSFX->isChecked())                options.stTypes.insert(SpecAbstract::RECORD_TYPE_SFX);
+    if(ui->checkBoxSFXData->isChecked())            options.stTypes.insert(SpecAbstract::RECORD_TYPE_SFXDATA);
+    if(ui->checkBoxSignTool->isChecked())           options.stTypes.insert(SpecAbstract::RECORD_TYPE_SIGNTOOL);
+    if(ui->checkBoxSourceCode->isChecked())         options.stTypes.insert(SpecAbstract::RECORD_TYPE_SOURCECODE);
+    if(ui->checkBoxStub->isChecked())               options.stTypes.insert(SpecAbstract::RECORD_TYPE_STUB);
+    if(ui->checkBoxTool->isChecked())               options.stTypes.insert(SpecAbstract::RECORD_TYPE_TOOL);
 
-    if(ui->checkBoxArchive->isChecked())            stTypes.insert(SpecAbstract::RECORD_TYPE_ARCHIVE);
-    if(ui->checkBoxCertificate->isChecked())        stTypes.insert(SpecAbstract::RECORD_TYPE_CERTIFICATE);
-    if(ui->checkBoxCompiler->isChecked())           stTypes.insert(SpecAbstract::RECORD_TYPE_COMPILER);
-    if(ui->checkBoxConverter->isChecked())          stTypes.insert(SpecAbstract::RECORD_TYPE_CONVERTER);
-    if(ui->checkBoxDatabase->isChecked())           stTypes.insert(SpecAbstract::RECORD_TYPE_DATABASE);
-    if(ui->checkBoxDebugData->isChecked())          stTypes.insert(SpecAbstract::RECORD_TYPE_DEBUGDATA);
-    if(ui->checkBoxDongleProtection->isChecked())   stTypes.insert(SpecAbstract::RECORD_TYPE_DONGLEPROTECTION);
-    if(ui->checkBoxDOSExtender->isChecked())        stTypes.insert(SpecAbstract::RECORD_TYPE_DOSEXTENDER);
-    if(ui->checkBoxFormat->isChecked())             stTypes.insert(SpecAbstract::RECORD_TYPE_FORMAT);
-    if(ui->checkBoxGeneric->isChecked())            stTypes.insert(SpecAbstract::RECORD_TYPE_GENERIC);
-    if(ui->checkBoxImage->isChecked())              stTypes.insert(SpecAbstract::RECORD_TYPE_IMAGE);
-    if(ui->checkBoxInstaller->isChecked())          stTypes.insert(SpecAbstract::RECORD_TYPE_INSTALLER);
-    if(ui->checkBoxInstallerData->isChecked())      stTypes.insert(SpecAbstract::RECORD_TYPE_INSTALLERDATA);
-    if(ui->checkBoxLibrary->isChecked())            stTypes.insert(SpecAbstract::RECORD_TYPE_LIBRARY);
-    if(ui->checkBoxLinker->isChecked())             stTypes.insert(SpecAbstract::RECORD_TYPE_LINKER);
-    if(ui->checkBoxNETObfuscator->isChecked())      stTypes.insert(SpecAbstract::RECORD_TYPE_NETOBFUSCATOR);
-    if(ui->checkBoxPacker->isChecked())             stTypes.insert(SpecAbstract::RECORD_TYPE_PACKER);
-    if(ui->checkBoxProtector->isChecked())          stTypes.insert(SpecAbstract::RECORD_TYPE_PROTECTOR);
-    if(ui->checkBoxProtectorData->isChecked())      stTypes.insert(SpecAbstract::RECORD_TYPE_PROTECTORDATA);
-    if(ui->checkBoxSFX->isChecked())                stTypes.insert(SpecAbstract::RECORD_TYPE_SFX);
-    if(ui->checkBoxSFXData->isChecked())            stTypes.insert(SpecAbstract::RECORD_TYPE_SFXDATA);
-    if(ui->checkBoxSignTool->isChecked())           stTypes.insert(SpecAbstract::RECORD_TYPE_SIGNTOOL);
-    if(ui->checkBoxSourceCode->isChecked())         stTypes.insert(SpecAbstract::RECORD_TYPE_SOURCECODE);
-    if(ui->checkBoxStub->isChecked())               stTypes.insert(SpecAbstract::RECORD_TYPE_STUB);
-    if(ui->checkBoxTool->isChecked())               stTypes.insert(SpecAbstract::RECORD_TYPE_TOOL);
-
-    SpecAbstract::SCAN_OPTIONS options={0};
     options.bRecursive=ui->checkBoxRecursive->isChecked();
     options.bDeepScan=ui->checkBoxDeepScan->isChecked();
     options.bSubdirectories=ui->checkBoxScanSubdirectories->isChecked();
 
-    DialogStaticScan ds(this);
-    connect(&ds, SIGNAL(scanFileStarted(QString)),this,SLOT(scanFileStarted(QString)),Qt::DirectConnection);
-    connect(&ds, SIGNAL(scanResult(SpecAbstract::SCAN_RESULT)),this,SLOT(scanResult(SpecAbstract::SCAN_RESULT)),Qt::DirectConnection);
+    DialogScanProgress ds(this);
+
     ds.setData(ui->lineEditDirectoryName->text(),&options);
+
     ds.exec();
-}
 
-quint32 GuiMainWindow::getFileCount(quint32 nCRC)
-{
-    quint32 nResult=0;
-
-    QSqlQuery query(dbSQLLite);
-
-    query.exec(QString("SELECT FILECOUNT FROM records where FILECRC='%1'").arg(nCRC));
-
-    if(query.next())
-    {
-        nResult=query.value("FILECOUNT").toString().trimmed().toUInt();
-    }
-
-    if(query.lastError().text().trimmed()!="")
-    {
-        qDebug(query.lastQuery().toLatin1().data());
-        qDebug(query.lastError().text().toLatin1().data());
-    }
-
-    return nResult;
-}
-
-void GuiMainWindow::setFileCount(quint32 nCRC, quint32 nCount)
-{
-    QSqlQuery query(dbSQLLite);
-
-    query.exec(QString("INSERT OR REPLACE INTO records(FILECRC,FILECOUNT) VALUES('%1','%2')").arg(nCRC).arg(nCount));
-
-    if(query.lastError().text().trimmed()!="")
-    {
-        qDebug(query.lastQuery().toLatin1().data());
-        qDebug(query.lastError().text().toLatin1().data());
-    }
-}
-
-void GuiMainWindow::setFileStat(QString sFileName, qint64 nTimeCount)
-{
-    QSqlQuery query(dbSQLLite);
-
-    query.exec(QString("INSERT OR REPLACE INTO files(FILENAME,TIMECOUNT,DATETIME) VALUES('%1','%2','%3')")
-               .arg(sFileName)
-               .arg(nTimeCount)
-               .arg(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss")));
-
-    if(query.lastError().text().trimmed()!="")
-    {
-        qDebug(query.lastQuery().toLatin1().data());
-        qDebug(query.lastError().text().toLatin1().data());
-    }
+//    DialogStaticScan ds(this);
+//    connect(&ds, SIGNAL(scanFileStarted(QString)),this,SLOT(scanFileStarted(QString)),Qt::DirectConnection);
+//    connect(&ds, SIGNAL(scanResult(SpecAbstract::SCAN_RESULT)),this,SLOT(scanResult(SpecAbstract::SCAN_RESULT)),Qt::DirectConnection);
+//    ds.setData(ui->lineEditDirectoryName->text(),&options);
+//    ds.exec();
 }
 
 void GuiMainWindow::on_checkBoxAllFileTypes_toggled(bool checked)
@@ -578,68 +524,3 @@ void GuiMainWindow::on_pushButtonInfo_clicked()
     QMessageBox::information(this,tr("Info"),tr("Bugreports: horsicq@gmail.com"));
 }
 
-void GuiMainWindow::scanFileStarted(QString sFileName)
-{
-    setFileStat(sFileName,0);
-}
-
-void GuiMainWindow::scanResult(SpecAbstract::SCAN_RESULT scanResult)
-{
-    int nCount=scanResult.listRecords.count();
-
-    for(int i=0;i<nCount;i++)
-    {
-        SpecAbstract::SCAN_STRUCT ss=scanResult.listRecords.at(i);
-
-        if(stFileTypes.contains(ss.id.filetype)&&stTypes.contains(ss.type))
-        {
-            QString sResult=SpecAbstract::recordNameIdToString(ss.name);
-
-            if(ss.sVersion!="")
-            {
-                sResult+=QString("(%1)").arg(ss.sVersion);
-            }
-
-            if(ss.sInfo!="")
-            {
-                sResult+=QString("[%1]").arg(ss.sInfo);
-            }
-
-            sResult=XBinary::convertFileNameSymbols(sResult);
-
-            quint32 nCRC=XBinary::getCRC32(sResult);
-
-            bool bCopy=true;
-
-            int nCurrentCount=getFileCount(nCRC);
-
-            if(nCopyCount)
-            {
-                if(nCurrentCount>=nCopyCount)
-                {
-                    bCopy=false;
-                }
-            }
-
-            if(bCopy)
-            {
-                QString sFileName=sResultDirectory;
-
-                XBinary::createDirectory(sFileName);
-                sFileName+=QDir::separator()+SpecAbstract::recordFiletypeIdToString(ss.id.filetype);
-                XBinary::createDirectory(sFileName);
-                sFileName+=QDir::separator()+SpecAbstract::recordTypeIdToString(ss.type);
-                XBinary::createDirectory(sFileName);
-                sFileName+=QDir::separator()+sResult;
-                XBinary::createDirectory(sFileName);
-                sFileName+=QDir::separator()+XBinary::getBaseFileName(scanResult.sFileName);
-
-                if(XBinary::copyFile(scanResult.sFileName,sFileName))
-                {
-                    setFileCount(nCRC,nCurrentCount+1);
-                    setFileStat(scanResult.sFileName,scanResult.nScanTime);
-                }
-            }
-        }
-    }
-}
