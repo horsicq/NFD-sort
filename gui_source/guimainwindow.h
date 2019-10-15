@@ -85,6 +85,8 @@ private slots:
     void on_checkBoxTool_toggled(bool checked);
     void on_pushButtonInfo_clicked();
 
+    void on_checkBoxPETool_toggled(bool checked);
+
 private:
     Ui::GuiMainWindow *ui;
 

@@ -122,6 +122,7 @@ void GuiMainWindow::_scan()
     if(ui->checkBoxLinker->isChecked())             options.stTypes.insert(SpecAbstract::RECORD_TYPE_LINKER);
     if(ui->checkBoxNETObfuscator->isChecked())      options.stTypes.insert(SpecAbstract::RECORD_TYPE_NETOBFUSCATOR);
     if(ui->checkBoxPacker->isChecked())             options.stTypes.insert(SpecAbstract::RECORD_TYPE_PACKER);
+    if(ui->checkBoxPETool->isChecked())             options.stTypes.insert(SpecAbstract::RECORD_TYPE_PETOOL);
     if(ui->checkBoxProtector->isChecked())          options.stTypes.insert(SpecAbstract::RECORD_TYPE_PROTECTOR);
     if(ui->checkBoxProtectorData->isChecked())      options.stTypes.insert(SpecAbstract::RECORD_TYPE_PROTECTORDATA);
     if(ui->checkBoxSFX->isChecked())                options.stTypes.insert(SpecAbstract::RECORD_TYPE_SFX);
@@ -259,6 +260,7 @@ void GuiMainWindow::on_checkBoxAllTypes_toggled(bool checked)
     ui->checkBoxLinker->setChecked(checked);
     ui->checkBoxNETObfuscator->setChecked(checked);
     ui->checkBoxPacker->setChecked(checked);
+    ui->checkBoxPETool->setChecked(checked);
     ui->checkBoxProtector->setChecked(checked);
     ui->checkBoxProtectorData->setChecked(checked);
     ui->checkBoxSFX->setChecked(checked);
@@ -524,3 +526,13 @@ void GuiMainWindow::on_pushButtonInfo_clicked()
     QMessageBox::information(this,tr("Info"),tr("Bugreports: horsicq@gmail.com"));
 }
 
+
+void GuiMainWindow::on_checkBoxPETool_toggled(bool checked)
+{
+    QSignalBlocker blocker(ui->checkBoxAllTypes);
+
+    if(!checked)
+    {
+        ui->checkBoxAllTypes->setChecked(false);
+    }
+}
