@@ -26,6 +26,7 @@
 #include <QMainWindow>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QSettings>
 #include "dialogscanprogress.h"
 #include "staticscan.h"
 

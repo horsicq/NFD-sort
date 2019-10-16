@@ -30,16 +30,19 @@ GuiMainWindow::GuiMainWindow(QWidget *parent) :
 
     setWindowTitle(QString("%1 v%2").arg(X_APPLICATIONNAME).arg(X_APPLICATIONVERSION));
 
+    options={0};
+
+    QString sSettingsFile=QApplication::applicationDirPath()+QDir::separator()+QString("%1.ini").arg(X_APPLICATIONNAME);
+    QSettings settings(sSettingsFile,QSettings::IniFormat);
+
     ui->checkBoxAllFileTypes->setChecked(true);
     ui->checkBoxAllTypes->setChecked(true);
 
-    ui->lineEditDirectoryName->setText(QDir::currentPath());
-    ui->lineEditOut->setText(QDir::currentPath());
+    ui->lineEditDirectoryName->setText(settings.value("DirectoryName",QDir::currentPath()).toString());
+    ui->lineEditOut->setText(settings.value("ResultName",QDir::currentPath()).toString());
 
-    options={0};
-
-    QString sDatabaseName=":memory:";
-    options.bContinue=false;
+    options.bContinue=settings.value("Continue",false).toBool();
+    QString sDatabaseName=settings.value("DatabaseName",":memory:").toString();
 
     if(!ScanProgress::createDatabase(&options.dbSQLLite,sDatabaseName))
     {
