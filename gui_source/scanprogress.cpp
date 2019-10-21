@@ -152,8 +152,10 @@ void ScanProgress::findFiles(QString sDirectoryName)
             QDir dir(sDirectoryName);
 
             QFileInfoList eil=dir.entryInfoList();
+            
+            int nCount=eil.count();
 
-            for(int i=0; (i<eil.count())&&(!bIsStop); i++)
+            for(int i=0; (i<nCount)&&(!bIsStop); i++)
             {
                 QString sFN=eil.at(i).fileName();
 
