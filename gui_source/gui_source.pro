@@ -8,22 +8,22 @@ TEMPLATE = app
 SOURCES += \
         guimainwindow.cpp \
         main_gui.cpp \
-    dialogscanprogress.cpp \
-    scanprogress.cpp
+        dialogscanprogress.cpp \
+        scanprogress.cpp
 
 HEADERS += \
         guimainwindow.h \
-    ../global.h \
-    dialogscanprogress.h \
-    scanprogress.h
+        ../global.h \
+        dialogscanprogress.h \
+        scanprogress.h
 
 FORMS += \
         guimainwindow.ui \
-    dialogscanprogress.ui
+        dialogscanprogress.ui
 
-!contains(XCONFIG, formresult) {
-    XCONFIG += formresult
-    include(../StaticScan/formresult.pri)
+!contains(XCONFIG, staticscan) {
+    XCONFIG += staticscan
+    include(../../_mylibs/StaticScan/staticscan.pri)
 }
 
 include(../build.pri)
