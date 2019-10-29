@@ -53,6 +53,12 @@ GuiMainWindow::GuiMainWindow(QWidget *parent) :
 
 GuiMainWindow::~GuiMainWindow()
 {
+    QString sSettingsFile=QApplication::applicationDirPath()+QDir::separator()+QString("%1.ini").arg(X_APPLICATIONNAME);
+    QSettings settings(sSettingsFile,QSettings::IniFormat);
+
+    settings.setValue("DirectoryName",ui->lineEditDirectoryName->text());
+    settings.setValue("ResultName",ui->lineEditOut->text());
+
     delete ui;
 }
 
