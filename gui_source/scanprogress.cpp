@@ -251,7 +251,7 @@ void ScanProgress::process()
 
                 sResult=XBinary::convertFileNameSymbols(sResult);
 
-                quint32 nCRC=XBinary::getCRC32(sResult);
+                quint32 nCRC=XBinary::getStringCustomCRC32(sResult);
 
                 bool bCopy=true;
 

@@ -88,6 +88,8 @@ private slots:
 
     void on_checkBoxPETool_toggled(bool checked);
 
+    void on_checkBoxJoiner_toggled(bool checked);
+
 private:
     Ui::GuiMainWindow *ui;
 

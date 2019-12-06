@@ -127,6 +127,7 @@ void GuiMainWindow::_scan()
     if(ui->checkBoxImage->isChecked())              options.stTypes.insert(SpecAbstract::RECORD_TYPE_IMAGE);
     if(ui->checkBoxInstaller->isChecked())          options.stTypes.insert(SpecAbstract::RECORD_TYPE_INSTALLER);
     if(ui->checkBoxInstallerData->isChecked())      options.stTypes.insert(SpecAbstract::RECORD_TYPE_INSTALLERDATA);
+    if(ui->checkBoxJoiner->isChecked())             options.stTypes.insert(SpecAbstract::RECORD_TYPE_JOINER);
     if(ui->checkBoxLibrary->isChecked())            options.stTypes.insert(SpecAbstract::RECORD_TYPE_LIBRARY);
     if(ui->checkBoxLinker->isChecked())             options.stTypes.insert(SpecAbstract::RECORD_TYPE_LINKER);
     if(ui->checkBoxNETObfuscator->isChecked())      options.stTypes.insert(SpecAbstract::RECORD_TYPE_NETOBFUSCATOR);
@@ -265,6 +266,7 @@ void GuiMainWindow::on_checkBoxAllTypes_toggled(bool checked)
     ui->checkBoxImage->setChecked(checked);
     ui->checkBoxInstaller->setChecked(checked);
     ui->checkBoxInstallerData->setChecked(checked);
+    ui->checkBoxJoiner->setChecked(checked);
     ui->checkBoxLibrary->setChecked(checked);
     ui->checkBoxLinker->setChecked(checked);
     ui->checkBoxNETObfuscator->setChecked(checked);
@@ -537,6 +539,16 @@ void GuiMainWindow::on_pushButtonInfo_clicked()
 
 
 void GuiMainWindow::on_checkBoxPETool_toggled(bool checked)
+{
+    QSignalBlocker blocker(ui->checkBoxAllTypes);
+
+    if(!checked)
+    {
+        ui->checkBoxAllTypes->setChecked(false);
+    }
+}
+
+void GuiMainWindow::on_checkBoxJoiner_toggled(bool checked)
 {
     QSignalBlocker blocker(ui->checkBoxAllTypes);
 

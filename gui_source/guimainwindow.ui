@@ -218,24 +218,10 @@
          <string>Types</string>
         </property>
         <layout class="QGridLayout" name="gridLayout">
-         <item row="3" column="0">
-          <widget class="QCheckBox" name="checkBoxCertificate">
-           <property name="text">
-            <string>Certificate</string>
-           </property>
-          </widget>
-         </item>
          <item row="6" column="0">
           <widget class="QCheckBox" name="checkBoxConverter">
            <property name="text">
             <string>Converter</string>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="0">
-          <widget class="QCheckBox" name="checkBoxCompiler">
-           <property name="text">
-            <string>Compiler</string>
            </property>
           </widget>
          </item>
@@ -246,17 +232,10 @@
            </property>
           </widget>
          </item>
-         <item row="8" column="0">
-          <widget class="QCheckBox" name="checkBoxDebugData">
+         <item row="3" column="0">
+          <widget class="QCheckBox" name="checkBoxCertificate">
            <property name="text">
-            <string>Debug data</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="QCheckBox" name="checkBoxArchive">
-           <property name="text">
-            <string>Archive</string>
+            <string>Certificate</string>
            </property>
           </widget>
          </item>
@@ -267,13 +246,6 @@
            </property>
           </widget>
          </item>
-         <item row="14" column="0">
-          <widget class="QCheckBox" name="checkBoxDongleProtection">
-           <property name="text">
-            <string>Dongle protection</string>
-           </property>
-          </widget>
-         </item>
          <item row="2" column="1">
           <widget class="QCheckBox" name="checkBoxDOSExtender">
            <property name="text">
@@ -281,31 +253,24 @@
            </property>
           </widget>
          </item>
-         <item row="3" column="1">
-          <widget class="QCheckBox" name="checkBoxFormat">
+         <item row="8" column="3">
+          <widget class="QCheckBox" name="checkBoxTool">
            <property name="text">
-            <string>Format</string>
+            <string>Tool</string>
            </property>
           </widget>
          </item>
-         <item row="5" column="1">
-          <widget class="QCheckBox" name="checkBoxGeneric">
+         <item row="7" column="3">
+          <widget class="QCheckBox" name="checkBoxStub">
            <property name="text">
-            <string>Generic</string>
+            <string>Stub</string>
            </property>
           </widget>
          </item>
-         <item row="6" column="1">
-          <widget class="QCheckBox" name="checkBoxImage">
+         <item row="2" column="3">
+          <widget class="QCheckBox" name="checkBoxSFX">
            <property name="text">
-            <string>Image</string>
-           </property>
-          </widget>
-         </item>
-         <item row="7" column="1">
-          <widget class="QCheckBox" name="checkBoxInstaller">
-           <property name="text">
-            <string>Installer</string>
+            <string>SFX</string>
            </property>
           </widget>
          </item>
@@ -316,63 +281,77 @@
            </property>
           </widget>
          </item>
-         <item row="14" column="1">
-          <widget class="QCheckBox" name="checkBoxLibrary">
+         <item row="3" column="1">
+          <widget class="QCheckBox" name="checkBoxFormat">
            <property name="text">
-            <string>Library</string>
+            <string>Format</string>
            </property>
           </widget>
          </item>
-         <item row="2" column="2">
-          <widget class="QCheckBox" name="checkBoxLinker">
+         <item row="2" column="0">
+          <widget class="QCheckBox" name="checkBoxArchive">
            <property name="text">
-            <string>Linker</string>
+            <string>Archive</string>
            </property>
           </widget>
          </item>
-         <item row="3" column="2">
-          <widget class="QCheckBox" name="checkBoxNETObfuscator">
+         <item row="6" column="1">
+          <widget class="QCheckBox" name="checkBoxImage">
            <property name="text">
-            <string>.NET obfuscator</string>
+            <string>Image</string>
            </property>
           </widget>
          </item>
-         <item row="5" column="2">
-          <widget class="QCheckBox" name="checkBoxPacker">
+         <item row="5" column="1">
+          <widget class="QCheckBox" name="checkBoxGeneric">
            <property name="text">
-            <string>Packer</string>
+            <string>Generic</string>
            </property>
           </widget>
          </item>
          <item row="6" column="3">
-          <widget class="QCheckBox" name="checkBoxStub">
-           <property name="text">
-            <string>Stub</string>
-           </property>
-          </widget>
-         </item>
-         <item row="7" column="3">
-          <widget class="QCheckBox" name="checkBoxTool">
-           <property name="text">
-            <string>Tool</string>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="3">
           <widget class="QCheckBox" name="checkBoxSourceCode">
            <property name="text">
             <string>Source code</string>
            </property>
           </widget>
          </item>
-         <item row="3" column="3">
+         <item row="14" column="0">
+          <widget class="QCheckBox" name="checkBoxDongleProtection">
+           <property name="text">
+            <string>Dongle protection</string>
+           </property>
+          </widget>
+         </item>
+         <item row="7" column="1">
+          <widget class="QCheckBox" name="checkBoxInstaller">
+           <property name="text">
+            <string>Installer</string>
+           </property>
+          </widget>
+         </item>
+         <item row="8" column="0">
+          <widget class="QCheckBox" name="checkBoxDebugData">
+           <property name="text">
+            <string>Debug data</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="3">
           <widget class="QCheckBox" name="checkBoxSignTool">
            <property name="text">
             <string>Sign tool</string>
            </property>
           </widget>
          </item>
-         <item row="2" column="3">
+         <item row="5" column="0">
+          <widget class="QCheckBox" name="checkBoxCompiler">
+           <property name="text">
+            <string>Compiler</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="3">
           <widget class="QCheckBox" name="checkBoxSFXData">
            <property name="text">
             <string>SFX data</string>
@@ -380,30 +359,58 @@
           </widget>
          </item>
          <item row="14" column="2">
-          <widget class="QCheckBox" name="checkBoxSFX">
-           <property name="text">
-            <string>SFX</string>
-           </property>
-          </widget>
-         </item>
-         <item row="8" column="2">
           <widget class="QCheckBox" name="checkBoxProtectorData">
            <property name="text">
             <string>Protector data</string>
            </property>
           </widget>
          </item>
-         <item row="7" column="2">
+         <item row="8" column="2">
           <widget class="QCheckBox" name="checkBoxProtector">
            <property name="text">
             <string>Protector</string>
            </property>
           </widget>
          </item>
-         <item row="6" column="2">
+         <item row="7" column="2">
           <widget class="QCheckBox" name="checkBoxPETool">
            <property name="text">
             <string>PE tool</string>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="2">
+          <widget class="QCheckBox" name="checkBoxPacker">
+           <property name="text">
+            <string>Packer</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="2">
+          <widget class="QCheckBox" name="checkBoxNETObfuscator">
+           <property name="text">
+            <string>.NET obfuscator</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="2">
+          <widget class="QCheckBox" name="checkBoxLinker">
+           <property name="text">
+            <string>Linker</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="2">
+          <widget class="QCheckBox" name="checkBoxLibrary">
+           <property name="text">
+            <string>Library</string>
+           </property>
+          </widget>
+         </item>
+         <item row="14" column="1">
+          <widget class="QCheckBox" name="checkBoxJoiner">
+           <property name="text">
+            <string>Joiner</string>
            </property>
           </widget>
          </item>
