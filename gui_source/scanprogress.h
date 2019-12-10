@@ -27,6 +27,10 @@
 #include <QSqlError>
 #include <QSqlQuery>
 #include "staticscan.h"
+#include <QMutex>
+#include <QMutexLocker>
+#include <QFutureWatcher>
+#include <QtConcurrent>
 
 class ScanProgress : public QObject
 {
@@ -61,11 +65,17 @@ public:
     void setFileStat(QString sFileName, QString sTimeCount, QString sDate);
     void createTables();
     QString getCurrentFileName();
+    QString getCurrentFileNameAndLock();
     qint64 getNumberOfFile();
     void findFiles(QString sDirectoryName);
 
     void startTransaction();
     void endTransaction();
+
+    void _processFile(QString sFileName);
+
+private slots:
+    void scan_finished();
 
 signals:
     void completed(qint64 nElapsedTime);
@@ -82,6 +92,8 @@ private:
     bool bIsStop;
     STATS currentStats;
     QElapsedTimer *pElapsedTimer;
+//    QMutex mutex;
+    QFutureWatcher<void> futureWatcher;
 };
 
 #endif // SCANPROGRESS_H

@@ -27,6 +27,8 @@ ScanProgress::ScanProgress(QObject *parent) : QObject(parent)
     _pOptions=nullptr;
     currentStats=STATS();
     pElapsedTimer=nullptr;
+
+//    connect(&futureWatcher, SIGNAL(finished()), this, SLOT(scan_finished()));
 }
 
 void ScanProgress::setData(QString sDirectoryName, ScanProgress::SCAN_OPTIONS *pOptions)
@@ -37,6 +39,8 @@ void ScanProgress::setData(QString sDirectoryName, ScanProgress::SCAN_OPTIONS *p
 
 quint32 ScanProgress::getFileCount(quint32 nCRC)
 {
+//    QMutexLocker locker(&mutex);
+
     quint32 nResult=0;
 
     QSqlQuery query(_pOptions->dbSQLLite);
@@ -59,6 +63,8 @@ quint32 ScanProgress::getFileCount(quint32 nCRC)
 
 void ScanProgress::setFileCount(quint32 nCRC, quint32 nCount)
 {
+//    QMutexLocker locker(&mutex);
+
     QSqlQuery query(_pOptions->dbSQLLite);
 
     query.exec(QString("INSERT OR REPLACE INTO records(FILECRC,FILECOUNT) VALUES('%1','%2')").arg(nCRC).arg(nCount));
@@ -72,6 +78,8 @@ void ScanProgress::setFileCount(quint32 nCRC, quint32 nCount)
 
 void ScanProgress::setFileStat(QString sFileName, QString sTimeCount, QString sDate)
 {
+//    QMutexLocker locker(&mutex);
+
     QSqlQuery query(_pOptions->dbSQLLite);
 
     query.exec(QString("INSERT OR REPLACE INTO files(FILENAME,TIMECOUNT,DATETIME) VALUES('%1','%2','%3')")
@@ -90,6 +98,8 @@ void ScanProgress::setFileStat(QString sFileName, QString sTimeCount, QString sD
 
 void ScanProgress::createTables()
 {
+//    QMutexLocker locker(&mutex);
+
     QSqlQuery query(_pOptions->dbSQLLite);
 
     query.exec("DROP TABLE if exists records");
@@ -100,6 +110,8 @@ void ScanProgress::createTables()
 
 QString ScanProgress::getCurrentFileName()
 {
+//    QMutexLocker locker(&mutex);
+
     QString sResult;
 
     QSqlQuery query(_pOptions->dbSQLLite);
@@ -120,8 +132,45 @@ QString ScanProgress::getCurrentFileName()
     return sResult;
 }
 
+QString ScanProgress::getCurrentFileNameAndLock()
+{
+//    QMutexLocker locker(&mutex);
+
+    QString sResult;
+
+    QSqlQuery query(_pOptions->dbSQLLite);
+
+    query.exec(QString("SELECT FILENAME FROM files where TIMECOUNT='' AND DATETIME='' LIMIT 1"));
+
+    if(query.next())
+    {
+        sResult=query.value("FILENAME").toString().trimmed();
+    }
+
+    if(query.lastError().text().trimmed()!="")
+    {
+        qDebug(query.lastQuery().toLatin1().data());
+        qDebug(query.lastError().text().toLatin1().data());
+    }
+
+    query.exec(QString("INSERT OR REPLACE INTO files(FILENAME,TIMECOUNT,DATETIME) VALUES('%1','%2','%3')")
+               .arg(sResult)
+               .arg(0)
+               .arg(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss")));
+
+    if(query.lastError().text().trimmed()!="")
+    {
+        qDebug(query.lastQuery().toLatin1().data());
+        qDebug(query.lastError().text().toLatin1().data());
+    }
+
+    return sResult;
+}
+
 qint64 ScanProgress::getNumberOfFile()
 {
+//    QMutexLocker locker(&mutex);
+
     qint64 nResult=0;
 
     QSqlQuery query(_pOptions->dbSQLLite);
@@ -182,50 +231,18 @@ void ScanProgress::endTransaction()
     query.exec("COMMIT");
 }
 
-void ScanProgress::process()
+void ScanProgress::_processFile(QString sFileName)
 {
-    pElapsedTimer=new QElapsedTimer;
-    pElapsedTimer->start();
+    currentStats.nCurrent++;
+    currentStats.sStatus=sFileName;
 
-    if(!(_pOptions->bContinue))
+    if(currentStats.sStatus!="")
     {
-        createTables();
-    }
-    currentStats.nTotal=0;
-    currentStats.nCurrent=0;
-
-    bIsStop=false;
-
-    currentStats.sStatus=tr("Directory scan");
-
-    if(!(_pOptions->bContinue))
-    {
-        startTransaction();
-
-        findFiles(_sDirectoryName);
-
-        endTransaction();
-    }
-
-    currentStats.nTotal=getNumberOfFile();
-
-    for(int i=0; (i<currentStats.nTotal)&&(!bIsStop); i++)
-    {
-        currentStats.nCurrent=i+1;
-        currentStats.sStatus=getCurrentFileName();
-
-        if(currentStats.sStatus=="")
-        {
-            break;
-        }
-
         SpecAbstract::SCAN_OPTIONS options={};
 
         options.bDeepScan=_pOptions->bDeepScan;
         options.bRecursive=_pOptions->bRecursive;
         options.bSubdirectories=_pOptions->bSubdirectories;
-
-        setFileStat(currentStats.sStatus,"",QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"));
 
         SpecAbstract::SCAN_RESULT scanResult=StaticScan::processFile(currentStats.sStatus,&options);
 
@@ -288,6 +305,48 @@ void ScanProgress::process()
 
         setFileStat(scanResult.sFileName,QString::number(scanResult.nScanTime),QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"));
     }
+}
+
+void ScanProgress::scan_finished()
+{
+    qDebug("void ScanProgress::scan_finished()");
+}
+
+void ScanProgress::process()
+{
+    pElapsedTimer=new QElapsedTimer;
+    pElapsedTimer->start();
+
+    if(!(_pOptions->bContinue))
+    {
+        createTables();
+    }
+    currentStats.nTotal=0;
+    currentStats.nCurrent=0;
+
+    bIsStop=false;
+
+    currentStats.sStatus=tr("Directory scan");
+
+    if(!(_pOptions->bContinue))
+    {
+        startTransaction();
+
+        findFiles(_sDirectoryName);
+
+        endTransaction();
+    }
+
+    currentStats.nTotal=getNumberOfFile();
+
+    for(int i=0; (i<currentStats.nTotal)&&(!bIsStop); i++)
+    {
+        QString sFileName=getCurrentFileNameAndLock();
+        QFuture<void> future=QtConcurrent::run(this,&ScanProgress::_processFile,sFileName);
+        futureWatcher.setFuture(future);
+    }
+
+    futureWatcher.waitForFinished();
 
     emit completed(pElapsedTimer->elapsed());
     delete pElapsedTimer;
@@ -298,6 +357,7 @@ void ScanProgress::process()
 
 void ScanProgress::stop()
 {
+    futureWatcher.cancel();
     bIsStop=true;
 }
 
