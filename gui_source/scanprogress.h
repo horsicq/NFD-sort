@@ -31,6 +31,7 @@
 #include <QMutexLocker>
 #include <QFutureWatcher>
 #include <QtConcurrent>
+#include <QSemaphore>
 
 class ScanProgress : public QObject
 {
@@ -54,6 +55,7 @@ public:
         qint32 nCurrent;
         qint64 nElapsed;
         QString sStatus;
+        qint32 nNumberOfThreads;
     };
 
     explicit ScanProgress(QObject *parent=nullptr);
@@ -87,13 +89,14 @@ public slots:
     static bool createDatabase(QSqlDatabase *pDb,QString sDatabaseName);
 
 private:
+    const int N_MAXNUMBEROFTHREADS=8;
     QString _sDirectoryName;
     SCAN_OPTIONS *_pOptions;
     bool bIsStop;
     STATS currentStats;
     QElapsedTimer *pElapsedTimer;
-//    QMutex mutex;
-    QFutureWatcher<void> futureWatcher;
+    QMutex mutex;
+    QSemaphore *pSemaphore;
 };
 
 #endif // SCANPROGRESS_H

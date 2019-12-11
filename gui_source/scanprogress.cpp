@@ -27,7 +27,7 @@ ScanProgress::ScanProgress(QObject *parent) : QObject(parent)
     _pOptions=nullptr;
     currentStats=STATS();
     pElapsedTimer=nullptr;
-
+    pSemaphore=nullptr;
 //    connect(&futureWatcher, SIGNAL(finished()), this, SLOT(scan_finished()));
 }
 
@@ -39,7 +39,7 @@ void ScanProgress::setData(QString sDirectoryName, ScanProgress::SCAN_OPTIONS *p
 
 quint32 ScanProgress::getFileCount(quint32 nCRC)
 {
-//    QMutexLocker locker(&mutex);
+    QMutexLocker locker(&mutex);
 
     quint32 nResult=0;
 
@@ -63,7 +63,7 @@ quint32 ScanProgress::getFileCount(quint32 nCRC)
 
 void ScanProgress::setFileCount(quint32 nCRC, quint32 nCount)
 {
-//    QMutexLocker locker(&mutex);
+    QMutexLocker locker(&mutex);
 
     QSqlQuery query(_pOptions->dbSQLLite);
 
@@ -78,7 +78,7 @@ void ScanProgress::setFileCount(quint32 nCRC, quint32 nCount)
 
 void ScanProgress::setFileStat(QString sFileName, QString sTimeCount, QString sDate)
 {
-//    QMutexLocker locker(&mutex);
+    QMutexLocker locker(&mutex);
 
     QSqlQuery query(_pOptions->dbSQLLite);
 
@@ -98,7 +98,7 @@ void ScanProgress::setFileStat(QString sFileName, QString sTimeCount, QString sD
 
 void ScanProgress::createTables()
 {
-//    QMutexLocker locker(&mutex);
+    QMutexLocker locker(&mutex);
 
     QSqlQuery query(_pOptions->dbSQLLite);
 
@@ -110,7 +110,7 @@ void ScanProgress::createTables()
 
 QString ScanProgress::getCurrentFileName()
 {
-//    QMutexLocker locker(&mutex);
+    QMutexLocker locker(&mutex);
 
     QString sResult;
 
@@ -134,7 +134,7 @@ QString ScanProgress::getCurrentFileName()
 
 QString ScanProgress::getCurrentFileNameAndLock()
 {
-//    QMutexLocker locker(&mutex);
+    QMutexLocker locker(&mutex);
 
     QString sResult;
 
@@ -169,7 +169,7 @@ QString ScanProgress::getCurrentFileNameAndLock()
 
 qint64 ScanProgress::getNumberOfFile()
 {
-//    QMutexLocker locker(&mutex);
+    QMutexLocker locker(&mutex);
 
     qint64 nResult=0;
 
@@ -233,6 +233,8 @@ void ScanProgress::endTransaction()
 
 void ScanProgress::_processFile(QString sFileName)
 {
+    pSemaphore->acquire();
+
     currentStats.nCurrent++;
     currentStats.sStatus=sFileName;
 
@@ -305,6 +307,8 @@ void ScanProgress::_processFile(QString sFileName)
 
         setFileStat(scanResult.sFileName,QString::number(scanResult.nScanTime),QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"));
     }
+
+    pSemaphore->release();
 }
 
 void ScanProgress::scan_finished()
@@ -314,6 +318,7 @@ void ScanProgress::scan_finished()
 
 void ScanProgress::process()
 {
+    pSemaphore=new QSemaphore(N_MAXNUMBEROFTHREADS);
     pElapsedTimer=new QElapsedTimer;
     pElapsedTimer->start();
 
@@ -342,11 +347,43 @@ void ScanProgress::process()
     for(int i=0; (i<currentStats.nTotal)&&(!bIsStop); i++)
     {
         QString sFileName=getCurrentFileNameAndLock();
+
+        if(sFileName=="")
+        {
+            break;
+        }
+
         QFuture<void> future=QtConcurrent::run(this,&ScanProgress::_processFile,sFileName);
-        futureWatcher.setFuture(future);
+
+        QThread::msleep(100);
+
+        while(true)
+        {
+            int nAvailable=pSemaphore->available();
+            currentStats.nNumberOfThreads=N_MAXNUMBEROFTHREADS-nAvailable;
+            if(nAvailable)
+            {
+                break;
+            }
+
+            QThread::msleep(500);
+        }
     }
 
-    futureWatcher.waitForFinished();
+    while(true)
+    {
+        int nAvailable=pSemaphore->available();
+        currentStats.nNumberOfThreads=N_MAXNUMBEROFTHREADS-nAvailable;
+
+        if(nAvailable==N_MAXNUMBEROFTHREADS)
+        {
+            break;
+        }
+
+        QThread::msleep(1000);
+    }
+
+    delete pSemaphore;
 
     emit completed(pElapsedTimer->elapsed());
     delete pElapsedTimer;
@@ -357,7 +394,6 @@ void ScanProgress::process()
 
 void ScanProgress::stop()
 {
-    futureWatcher.cancel();
     bIsStop=true;
 }
 
