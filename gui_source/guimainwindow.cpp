@@ -42,6 +42,8 @@ GuiMainWindow::GuiMainWindow(QWidget *parent) :
     ui->lineEditOut->setText(settings.value("ResultName",QDir::currentPath()).toString());
 
     options.bContinue=settings.value("Continue",false).toBool();
+    options.bIsTest=settings.value("Test",false).toBool();
+
     QString sDatabaseName=settings.value("DatabaseName",":memory:").toString();
 
     if(!ScanProgress::createDatabase(&options.dbSQLLite,sDatabaseName))

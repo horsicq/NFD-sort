@@ -245,6 +245,7 @@ void ScanProgress::_processFile(QString sFileName)
         options.bDeepScan=_pOptions->bDeepScan;
         options.bRecursive=_pOptions->bRecursive;
         options.bSubdirectories=_pOptions->bSubdirectories;
+        options.bIsTest=_pOptions->bIsTest;
 
         SpecAbstract::SCAN_RESULT scanResult=StaticScan::processFile(currentStats.sStatus,&options);
 
