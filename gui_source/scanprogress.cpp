@@ -240,6 +240,19 @@ void ScanProgress::_processFile(QString sFileName)
 
     if(currentStats.sStatus!="")
     {
+        QString sTempFile;
+
+        if(_pOptions->bDebug)
+        {
+            sTempFile=_pOptions->sResultDirectory;
+
+            XBinary::createDirectory(sFileName);
+
+            sTempFile+=QDir::separator()+XBinary::getBaseFileName(currentStats.sStatus);
+
+            XBinary::copyFile(currentStats.sStatus,sTempFile);
+        }
+
         SpecAbstract::SCAN_OPTIONS options={};
 
         options.bDeepScan=_pOptions->bDeepScan;
@@ -307,6 +320,11 @@ void ScanProgress::_processFile(QString sFileName)
         }
 
         setFileStat(scanResult.sFileName,QString::number(scanResult.nScanTime),QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"));
+
+        if(_pOptions->bDebug)
+        {
+            XBinary::removeFile(sTempFile);
+        }
     }
 
     pSemaphore->release();

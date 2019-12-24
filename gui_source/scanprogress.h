@@ -48,6 +48,7 @@ public:
         QString sResultDirectory;
         QSqlDatabase dbSQLLite;
         bool bContinue;
+        bool bDebug;
         bool bIsTest;
     };
     struct STATS
