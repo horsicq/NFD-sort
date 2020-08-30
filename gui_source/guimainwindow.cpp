@@ -48,7 +48,8 @@ GuiMainWindow::GuiMainWindow(QWidget *parent) :
 
     if(!ScanProgress::createDatabase(&options.dbSQLLite,sDatabaseName))
     {
-        QMessageBox::critical(this,tr("Error"),tr("Cannot open SQLITE database"));
+        QMessageBox::critical(this,tr("Error"),options.dbSQLLite.lastError().text());
+
         exit(1);
     }
 
