@@ -38,6 +38,17 @@ GuiMainWindow::GuiMainWindow(QWidget *parent) :
     ui->checkBoxAllFileTypes->setChecked(true);
     ui->checkBoxAllTypes->setChecked(true);
 
+    ui->comboBoxCopyFormat->addItem("FileType/Type/Name");
+    ui->comboBoxCopyFormat->addItem("Arch/FileType/Type/Name");
+    ui->comboBoxCopyFormat->addItem("FileType/Arch/Type/Name");
+
+    ui->comboBoxFileFormat->addItem("Original");
+    ui->comboBoxFileFormat->addItem("MD5");
+    ui->comboBoxFileFormat->addItem("MD5+Original");
+
+    ui->comboBoxCopyFormat->setCurrentIndex(settings.value("CopyFormat",0).toInt());
+    ui->comboBoxFileFormat->setCurrentIndex(settings.value("FileFormat",0).toInt());
+
     ui->lineEditDirectoryName->setText(settings.value("DirectoryName",QDir::currentPath()).toString());
     ui->lineEditOut->setText(settings.value("ResultName",QDir::currentPath()).toString());
 
@@ -119,6 +130,8 @@ void GuiMainWindow::_scan()
 
     options.stTypes.clear();
 
+    options.bAllTypes=ui->checkBoxAllTypes->isChecked();
+
     if(ui->checkBoxArchive->isChecked())            options.stTypes.insert(SpecAbstract::RECORD_TYPE_ARCHIVE);
     if(ui->checkBoxCertificate->isChecked())        options.stTypes.insert(SpecAbstract::RECORD_TYPE_CERTIFICATE);
     if(ui->checkBoxCompiler->isChecked())           options.stTypes.insert(SpecAbstract::RECORD_TYPE_COMPILER);
@@ -150,6 +163,11 @@ void GuiMainWindow::_scan()
     options.bRecursive=ui->checkBoxRecursive->isChecked();
     options.bDeepScan=ui->checkBoxDeepScan->isChecked();
     options.bSubdirectories=ui->checkBoxScanSubdirectories->isChecked();
+
+    options.copyFormat=(ScanProgress::CF)ui->comboBoxCopyFormat->currentIndex();
+    options.bRemoveCopied=ui->checkBoxRemoveCopied->isChecked();
+
+    options.fileFormat=(ScanProgress::FF)ui->comboBoxFileFormat->currentIndex();
 
     DialogScanProgress ds(this);
 

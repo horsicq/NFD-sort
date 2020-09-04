@@ -37,12 +37,35 @@ class ScanProgress : public QObject
 {
     Q_OBJECT
 public:
+    enum CF
+    {
+        CF_FT_TYPE_NAME=0,
+        CF_ARCH_FT_TYPE_NAME,
+        CF_FT_ARCH_TYPE_NAME
+    };
+
+    enum UP
+    {
+        UP_NONE=0,
+        UP_EP_BYTES,
+        UP_HEADER_BYTES,
+        UP_OVERLAY_BYTES
+    };
+
+    enum FF
+    {
+        FF_ORIGINAL=0,
+        FF_MD5,
+        FF_MD5_ORIGINAL
+    };
+
     struct SCAN_OPTIONS
     {
         bool bRecursive;
         bool bDeepScan;
         bool bSubdirectories;
         QSet<SpecAbstract::RECORD_FILETYPE> stFileTypes;
+        bool bAllTypes;
         QSet<SpecAbstract::RECORD_TYPE> stTypes;
         qint32 nCopyCount;
         QString sResultDirectory;
@@ -50,6 +73,9 @@ public:
         bool bContinue;
         bool bDebug;
         bool bIsTest;
+        CF copyFormat;
+        FF fileFormat;
+        bool bRemoveCopied;
     };
     struct STATS
     {
@@ -77,6 +103,8 @@ public:
     void endTransaction();
 
     void _processFile(QString sFileName);
+
+    static QString createPath(CF copyFormat, SpecAbstract::SCAN_STRUCT ss);
 
 private slots:
     void scan_finished();

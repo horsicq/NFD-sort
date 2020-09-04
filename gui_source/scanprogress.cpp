@@ -83,7 +83,7 @@ void ScanProgress::setFileStat(QString sFileName, QString sTimeCount, QString sD
     QSqlQuery query(_pOptions->dbSQLLite);
 
     query.exec(QString("INSERT OR REPLACE INTO files(FILENAME,TIMECOUNT,DATETIME) VALUES('%1','%2','%3')")
-               .arg(sFileName)
+               .arg(sFileName.replace("'","''"))
                .arg(sTimeCount)
                .arg(sDate));
 
@@ -154,7 +154,7 @@ QString ScanProgress::getCurrentFileNameAndLock()
     }
 
     query.exec(QString("INSERT OR REPLACE INTO files(FILENAME,TIMECOUNT,DATETIME) VALUES('%1','%2','%3')")
-               .arg(sResult)
+               .arg(sResult.replace("'","''"))
                .arg(0)
                .arg(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss")));
 
@@ -262,58 +262,84 @@ void ScanProgress::_processFile(QString sFileName)
 
         SpecAbstract::SCAN_RESULT scanResult=StaticScan::processFile(currentStats.sStatus,&options);
 
+        QString _sBaseFileName=XBinary::getBaseFileName(scanResult.sFileName);
+
+        if((_pOptions->fileFormat==FF_MD5)||(_pOptions->fileFormat==FF_MD5_ORIGINAL))
+        {
+            QString sMD5=XBinary::getHash(XBinary::HASH_MD5,scanResult.sFileName);
+
+            if(_pOptions->fileFormat==FF_MD5)
+            {
+                _sBaseFileName=sMD5;
+            }
+            else if(_pOptions->fileFormat==FF_MD5_ORIGINAL)
+            {
+                _sBaseFileName=sMD5+_sBaseFileName;
+            }
+        }
+
         int nCount=scanResult.listRecords.count();
 
-        for(int i=0;i<nCount;i++)
+        bool bGlobalCopy=false;
+        bool bIdentified=false;
+
+        if(nCount)
         {
-            SpecAbstract::SCAN_STRUCT ss=scanResult.listRecords.at(i);
-
-            if(_pOptions->stFileTypes.contains(ss.id.filetype)&&_pOptions->stTypes.contains(ss.type))
+            for(int i=0;i<nCount;i++)
             {
-                QString sResult=SpecAbstract::recordNameIdToString(ss.name);
+                SpecAbstract::SCAN_STRUCT ss=scanResult.listRecords.at(i);
 
-                if(ss.sVersion!="")
+                if(_pOptions->stFileTypes.contains(ss.id.fileType))
                 {
-                    sResult+=QString("(%1)").arg(ss.sVersion);
-                }
-
-                if(ss.sInfo!="")
-                {
-                    sResult+=QString("[%1]").arg(ss.sInfo);
-                }
-
-                sResult=XBinary::convertFileNameSymbols(sResult);
-
-                quint32 nCRC=XBinary::getStringCustomCRC32(sResult);
-
-                bool bCopy=true;
-
-                int nCurrentCount=getFileCount(nCRC);
-
-                if(_pOptions->nCopyCount)
-                {
-                    if(nCurrentCount>=_pOptions->nCopyCount)
+                    if((_pOptions->stTypes.contains(ss.type))||(_pOptions->bAllTypes))
                     {
-                        bCopy=false;
-                    }
-                }
+                        bIdentified=true;
 
-                if(bCopy)
-                {
-                    QString sFileName=_pOptions->sResultDirectory;
+                        QString sResult=SpecAbstract::recordNameIdToString(ss.name);
 
-                    XBinary::createDirectory(sFileName);
-                    sFileName+=QDir::separator()+SpecAbstract::recordFiletypeIdToString(ss.id.filetype);
-                    XBinary::createDirectory(sFileName);
-                    sFileName+=QDir::separator()+SpecAbstract::recordTypeIdToString(ss.type);
-                    XBinary::createDirectory(sFileName);
-                    sFileName+=QDir::separator()+sResult;
-                    XBinary::createDirectory(sFileName);
-                    sFileName+=QDir::separator()+XBinary::getBaseFileName(scanResult.sFileName);
+                        if(ss.sVersion!="")
+                        {
+                            sResult+=QString("(%1)").arg(ss.sVersion);
+                        }
 
-                    if(XBinary::copyFile(scanResult.sFileName,sFileName))
-                    {
-                        setFileCount(nCRC,nCurrentCount+1);
+                        if(ss.sInfo!="")
+                        {
+                            sResult+=QString("[%1]").arg(ss.sInfo);
+                        }
+
+                        sResult=XBinary::convertFileNameSymbols(sResult);
+
+                        quint32 nCRC=XBinary::getStringCustomCRC32(sResult);
+
+                        bool bCopy=true;
+
+                        int nCurrentCount=getFileCount(nCRC);
+
+                        if(_pOptions->nCopyCount)
+                        {
+                            if(nCurrentCount>=_pOptions->nCopyCount)
+                            {
+                                bCopy=false;
+                            }
+                        }
+
+                        if(bCopy)
+                        {
+                            QString _sFileName=  _pOptions->sResultDirectory+QDir::separator()+
+                                                createPath(_pOptions->copyFormat,ss)+QDir::separator()+
+                                                SpecAbstract::recordTypeIdToString(ss.type)+QDir::separator()+sResult;
+
+                            XBinary::createDirectory(_sFileName);
+
+                            _sFileName+=QDir::separator()+_sBaseFileName;
+
+                            if(XBinary::copyFile(scanResult.sFileName,_sFileName))
+                            {
+                                bGlobalCopy=true;
+
+                                setFileCount(nCRC,nCurrentCount+1);
+                            }
+                        }
                     }
                 }
             }
@@ -328,6 +354,26 @@ void ScanProgress::_processFile(QString sFileName)
     }
 
     pSemaphore->release();
+}
+
+QString ScanProgress::createPath(ScanProgress::CF copyFormat, SpecAbstract::SCAN_STRUCT ss)
+{
+    QString sResult;
+
+    if(copyFormat==ScanProgress::CF_FT_TYPE_NAME)
+    {
+        sResult=SpecAbstract::recordFileTypeIdToString(ss.id.fileType);
+    }
+    else if(copyFormat==ScanProgress::CF_FT_ARCH_TYPE_NAME)
+    {
+        sResult=SpecAbstract::recordFileTypeIdToString(ss.id.fileType)+QDir::separator()+ss.sArch;
+    }
+    else if(copyFormat==ScanProgress::CF_ARCH_FT_TYPE_NAME)
+    {
+        sResult=ss.sArch+QDir::separator()+SpecAbstract::recordFileTypeIdToString(ss.id.fileType);
+    }
+
+    return sResult;
 }
 
 void ScanProgress::scan_finished()
