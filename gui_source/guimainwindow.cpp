@@ -163,6 +163,7 @@ void GuiMainWindow::_scan()
     options.bRecursive=ui->checkBoxRecursive->isChecked();
     options.bDeepScan=ui->checkBoxDeepScan->isChecked();
     options.bSubdirectories=ui->checkBoxScanSubdirectories->isChecked();
+    options.bHeuristic=ui->checkBoxHeuristicScan->isChecked();
 
     options.copyFormat=(ScanProgress::CF)ui->comboBoxCopyFormat->currentIndex();
     options.bRemoveCopied=ui->checkBoxRemoveCopied->isChecked();

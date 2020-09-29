@@ -64,6 +64,7 @@ public:
         bool bRecursive;
         bool bDeepScan;
         bool bSubdirectories;
+        bool bHeuristic;
         QSet<SpecAbstract::RECORD_FILETYPE> stFileTypes;
         bool bAllTypes;
         QSet<SpecAbstract::RECORD_TYPE> stTypes;
