@@ -65,7 +65,7 @@ public:
         bool bDeepScan;
         bool bSubdirectories;
         bool bHeuristic;
-        QSet<SpecAbstract::RECORD_FILETYPE> stFileTypes;
+        QSet<XBinary::FT> stFileTypes;
         bool bAllTypes;
         QSet<SpecAbstract::RECORD_TYPE> stTypes;
         qint32 nCopyCount;

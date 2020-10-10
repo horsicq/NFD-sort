@@ -363,15 +363,15 @@ QString ScanProgress::createPath(ScanProgress::CF copyFormat, SpecAbstract::SCAN
 
     if(copyFormat==ScanProgress::CF_FT_TYPE_NAME)
     {
-        sResult=SpecAbstract::recordFileTypeIdToString(ss.id.fileType);
+        sResult=XBinary::fileTypeIdToString(ss.id.fileType);
     }
     else if(copyFormat==ScanProgress::CF_FT_ARCH_TYPE_NAME)
     {
-        sResult=SpecAbstract::recordFileTypeIdToString(ss.id.fileType)+QDir::separator()+ss.sArch;
+        sResult=XBinary::fileTypeIdToString(ss.id.fileType)+QDir::separator()+ss.sArch;
     }
     else if(copyFormat==ScanProgress::CF_ARCH_FT_TYPE_NAME)
     {
-        sResult=ss.sArch+QDir::separator()+SpecAbstract::recordFileTypeIdToString(ss.id.fileType);
+        sResult=ss.sArch+QDir::separator()+XBinary::fileTypeIdToString(ss.id.fileType);
     }
 
     return sResult;
