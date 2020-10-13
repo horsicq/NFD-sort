@@ -296,55 +296,99 @@ void ScanProgress::_processFile(QString sFileName)
                     {
                         bIdentified=true;
 
-                        QString sResult=SpecAbstract::recordNameIdToString(ss.name);
-
-                        if(ss.sVersion!="")
+                        if((_pOptions->copyType==CT_IDENT)||(_pOptions->copyType==CT_IDENT_UNK))
                         {
-                            sResult+=QString("(%1)").arg(ss.sVersion);
-                        }
+                            QString sResult=SpecAbstract::recordNameIdToString(ss.name);
 
-                        if(ss.sInfo!="")
-                        {
-                            sResult+=QString("[%1]").arg(ss.sInfo);
-                        }
-
-                        sResult=XBinary::convertFileNameSymbols(sResult);
-
-                        quint32 nCRC=XBinary::getStringCustomCRC32(sResult);
-
-                        bool bCopy=true;
-
-                        int nCurrentCount=getFileCount(nCRC);
-
-                        if(_pOptions->nCopyCount)
-                        {
-                            if(nCurrentCount>=_pOptions->nCopyCount)
+                            if(ss.sVersion!="")
                             {
-                                bCopy=false;
+                                sResult+=QString("(%1)").arg(ss.sVersion);
                             }
-                        }
 
-                        if(bCopy)
-                        {
-                            QString _sFileName=  _pOptions->sResultDirectory+QDir::separator()+
-                                                createPath(_pOptions->copyFormat,ss)+QDir::separator()+
-                                                SpecAbstract::recordTypeIdToString(ss.type)+QDir::separator()+sResult;
-
-                            XBinary::createDirectory(_sFileName);
-
-                            _sFileName+=QDir::separator()+_sBaseFileName;
-
-                            if(XBinary::copyFile(scanResult.sFileName,_sFileName))
+                            if(ss.sInfo!="")
                             {
-                                bGlobalCopy=true;
+                                sResult+=QString("[%1]").arg(ss.sInfo);
+                            }
 
-                                setFileCount(nCRC,nCurrentCount+1);
+                            sResult=XBinary::convertFileNameSymbols(sResult);
+
+                            quint32 nCRC=XBinary::getStringCustomCRC32(sResult);
+
+                            bool bCopy=true;
+
+                            int nCurrentCount=getFileCount(nCRC);
+
+                            if(_pOptions->nCopyCount)
+                            {
+                                if(nCurrentCount>=_pOptions->nCopyCount)
+                                {
+                                    bCopy=false;
+                                }
+                            }
+
+                            if(bCopy)
+                            {
+                                QString _sFileName=  _pOptions->sResultDirectory+QDir::separator()+
+                                                    createPath(_pOptions->copyFormat,ss)+QDir::separator()+
+                                                    SpecAbstract::recordTypeIdToString(ss.type)+QDir::separator()+sResult;
+
+                                XBinary::createDirectory(_sFileName);
+
+                                _sFileName+=QDir::separator()+_sBaseFileName;
+
+                                if(XBinary::copyFile(scanResult.sFileName,_sFileName))
+                                {
+                                    bGlobalCopy=true;
+
+                                    setFileCount(nCRC,nCurrentCount+1);
+                                }
                             }
                         }
                     }
                 }
             }
         }
+
+//        if((!bIdentified)&&((_pOptions->copyType==CT_IDENT_UNK)||(_pOptions->copyType==CT_UNK)))
+//        {
+//            if(_pOptions->stFileTypes.contains(scanResult..fileType))
+//            {
+//                DiE_Script::SCAN_HEADER sh=scanResult.scanHeader;
+
+//                quint32 nCRC=XBinary::getStringCustomCRC32(XBinary::fileTypeIdToString(sh.fileType)+sh.sArch+"__UNKNOWN");
+
+//                bool bCopy=true;
+
+//                int nCurrentCount=getFileCount(nCRC);
+
+//                if(_pOptions->nCopyCount)
+//                {
+//                    if(nCurrentCount>=_pOptions->nCopyCount)
+//                    {
+//                        bCopy=false;
+//                    }
+//                }
+
+//                if(bCopy)
+//                {
+//                    QString _sFileName=  _pOptions->sResultDirectory+QDir::separator()+
+//                                        createPath(_pOptions->copyFormat,sh)+QDir::separator()+
+//                                        "__UNKNOWN";
+
+
+//                    XBinary::createDirectory(_sFileName);
+
+//                    _sFileName+=QDir::separator()+_sBaseFileName;
+
+//                    if(XBinary::copyFile(scanResult.sFileName,_sFileName))
+//                    {
+//                        bGlobalCopy=true;
+
+//                        setFileCount(nCRC,nCurrentCount+1);
+//                    }
+//                }
+//            }
+//        }
 
         setFileStat(scanResult.sFileName,QString::number(scanResult.nScanTime),QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"));
 

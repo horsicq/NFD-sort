@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>935</width>
-    <height>525</height>
+    <width>960</width>
+    <height>583</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -216,6 +216,20 @@
           <widget class="QCheckBox" name="checkBoxMACHO64">
            <property name="text">
             <string>MACHO64</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="checkBoxAPK">
+           <property name="text">
+            <string>APK</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="checkBoxDEX">
+           <property name="text">
+            <string>DEX</string>
            </property>
           </widget>
          </item>
@@ -533,6 +547,37 @@
          </property>
          <item>
           <widget class="QComboBox" name="comboBoxCopyFormat">
+           <property name="minimumSize">
+            <size>
+             <width>200</width>
+             <height>0</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="groupBoxCopyType">
+        <property name="title">
+         <string>Copy Type</string>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_6">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QComboBox" name="comboBoxCopyType">
            <property name="minimumSize">
             <size>
              <width>200</width>

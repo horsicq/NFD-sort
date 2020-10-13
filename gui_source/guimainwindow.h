@@ -58,6 +58,8 @@ private slots:
     void on_checkBoxELF64_toggled(bool checked);
     void on_checkBoxMACHO32_toggled(bool checked);
     void on_checkBoxMACHO64_toggled(bool checked);
+    void on_checkBoxAPK_toggled(bool checked);
+    void on_checkBoxDEX_toggled(bool checked);
     void on_checkBoxAllTypes_toggled(bool checked);
     void on_checkBoxArchive_toggled(bool checked);
     void on_checkBoxCertificate_toggled(bool checked);

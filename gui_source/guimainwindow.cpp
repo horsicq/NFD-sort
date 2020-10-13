@@ -42,11 +42,16 @@ GuiMainWindow::GuiMainWindow(QWidget *parent) :
     ui->comboBoxCopyFormat->addItem("Arch/FileType/Type/Name");
     ui->comboBoxCopyFormat->addItem("FileType/Arch/Type/Name");
 
+    ui->comboBoxCopyType->addItem("Identified");
+    ui->comboBoxCopyType->addItem("Identified/Unknown");
+    ui->comboBoxCopyType->addItem("Unknown");
+
     ui->comboBoxFileFormat->addItem("Original");
     ui->comboBoxFileFormat->addItem("MD5");
     ui->comboBoxFileFormat->addItem("MD5+Original");
 
     ui->comboBoxCopyFormat->setCurrentIndex(settings.value("CopyFormat",0).toInt());
+    ui->comboBoxCopyType->setCurrentIndex(settings.value("CopyType",0).toInt());
     ui->comboBoxFileFormat->setCurrentIndex(settings.value("FileFormat",0).toInt());
 
     ui->lineEditDirectoryName->setText(settings.value("DirectoryName",QDir::currentPath()).toString());
@@ -74,6 +79,11 @@ GuiMainWindow::~GuiMainWindow()
 
     settings.setValue("DirectoryName",ui->lineEditDirectoryName->text());
     settings.setValue("ResultName",ui->lineEditOut->text());
+    settings.setValue("CopyCount",ui->spinBoxCopyCount->value());
+    settings.setValue("CopyFormat",ui->comboBoxCopyFormat->currentIndex());
+    settings.setValue("CopyType",ui->comboBoxCopyType->currentIndex());
+    settings.setValue("FileFormat",ui->comboBoxFileFormat->currentIndex());
+    settings.setValue("RemoveCopied",ui->checkBoxRemoveCopied->isChecked());
 
     delete ui;
 }
@@ -127,6 +137,8 @@ void GuiMainWindow::_scan()
     if(ui->checkBoxELF64->isChecked())              options.stFileTypes.insert(XBinary::FT_ELF64);
     if(ui->checkBoxMACHO32->isChecked())            options.stFileTypes.insert(XBinary::FT_MACH32);
     if(ui->checkBoxMACHO64->isChecked())            options.stFileTypes.insert(XBinary::FT_MACH64);
+    if(ui->checkBoxAPK->isChecked())                options.stFileTypes.insert(XBinary::FT_APK);
+    if(ui->checkBoxDEX->isChecked())                options.stFileTypes.insert(XBinary::FT_DEX);
 
     options.stTypes.clear();
 
@@ -166,6 +178,7 @@ void GuiMainWindow::_scan()
     options.bHeuristic=ui->checkBoxHeuristicScan->isChecked();
 
     options.copyFormat=(ScanProgress::CF)ui->comboBoxCopyFormat->currentIndex();
+    options.copyType=(ScanProgress::CT)ui->comboBoxCopyType->currentIndex();
     options.bRemoveCopied=ui->checkBoxRemoveCopied->isChecked();
 
     options.fileFormat=(ScanProgress::FF)ui->comboBoxFileFormat->currentIndex();
@@ -193,6 +206,8 @@ void GuiMainWindow::on_checkBoxAllFileTypes_toggled(bool checked)
     ui->checkBoxELF64->setChecked(checked);
     ui->checkBoxMACHO32->setChecked(checked);
     ui->checkBoxMACHO64->setChecked(checked);
+    ui->checkBoxAPK->setChecked(checked);
+    ui->checkBoxDEX->setChecked(checked);
 }
 
 void GuiMainWindow::on_checkBoxBinary_toggled(bool checked)
@@ -266,6 +281,26 @@ void GuiMainWindow::on_checkBoxMACHO32_toggled(bool checked)
 }
 
 void GuiMainWindow::on_checkBoxMACHO64_toggled(bool checked)
+{
+    QSignalBlocker blocker(ui->checkBoxAllFileTypes);
+
+    if(!checked)
+    {
+        ui->checkBoxAllFileTypes->setChecked(false);
+    }
+}
+
+void GuiMainWindow::on_checkBoxAPK_toggled(bool checked)
+{
+    QSignalBlocker blocker(ui->checkBoxAllFileTypes);
+
+    if(!checked)
+    {
+        ui->checkBoxAllFileTypes->setChecked(false);
+    }
+}
+
+void GuiMainWindow::on_checkBoxDEX_toggled(bool checked)
 {
     QSignalBlocker blocker(ui->checkBoxAllFileTypes);
 

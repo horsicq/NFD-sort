@@ -44,6 +44,13 @@ public:
         CF_FT_ARCH_TYPE_NAME
     };
 
+    enum CT
+    {
+        CT_IDENT=0,
+        CT_IDENT_UNK,
+        CT_UNK
+    };
+
     enum UP
     {
         UP_NONE=0,
@@ -75,6 +82,7 @@ public:
         bool bDebug;
         bool bIsTest;
         CF copyFormat;
+        CT copyType;
         FF fileFormat;
         bool bRemoveCopied;
     };
