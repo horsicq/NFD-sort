@@ -137,6 +137,8 @@ void GuiMainWindow::_scan()
     if(ui->checkBoxELF64->isChecked())              options.stFileTypes.insert(XBinary::FT_ELF64);
     if(ui->checkBoxMACHO32->isChecked())            options.stFileTypes.insert(XBinary::FT_MACH32);
     if(ui->checkBoxMACHO64->isChecked())            options.stFileTypes.insert(XBinary::FT_MACH64);
+    if(ui->checkBoxZIP->isChecked())                options.stFileTypes.insert(XBinary::FT_ZIP);
+    if(ui->checkBoxJAR->isChecked())                options.stFileTypes.insert(XBinary::FT_JAR);
     if(ui->checkBoxAPK->isChecked())                options.stFileTypes.insert(XBinary::FT_APK);
     if(ui->checkBoxDEX->isChecked())                options.stFileTypes.insert(XBinary::FT_DEX);
 
@@ -206,6 +208,8 @@ void GuiMainWindow::on_checkBoxAllFileTypes_toggled(bool checked)
     ui->checkBoxELF64->setChecked(checked);
     ui->checkBoxMACHO32->setChecked(checked);
     ui->checkBoxMACHO64->setChecked(checked);
+    ui->checkBoxZIP->setChecked(checked);
+    ui->checkBoxJAR->setChecked(checked);
     ui->checkBoxAPK->setChecked(checked);
     ui->checkBoxDEX->setChecked(checked);
 }
@@ -281,6 +285,26 @@ void GuiMainWindow::on_checkBoxMACHO32_toggled(bool checked)
 }
 
 void GuiMainWindow::on_checkBoxMACHO64_toggled(bool checked)
+{
+    QSignalBlocker blocker(ui->checkBoxAllFileTypes);
+
+    if(!checked)
+    {
+        ui->checkBoxAllFileTypes->setChecked(false);
+    }
+}
+
+void GuiMainWindow::on_checkBoxZIP_toggled(bool checked)
+{
+    QSignalBlocker blocker(ui->checkBoxAllFileTypes);
+
+    if(!checked)
+    {
+        ui->checkBoxAllFileTypes->setChecked(false);
+    }
+}
+
+void GuiMainWindow::on_checkBoxJAR_toggled(bool checked)
 {
     QSignalBlocker blocker(ui->checkBoxAllFileTypes);
 
