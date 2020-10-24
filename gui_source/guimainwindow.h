@@ -89,10 +89,13 @@ private slots:
     void on_checkBoxStub_toggled(bool checked);
     void on_checkBoxTool_toggled(bool checked);
     void on_pushButtonInfo_clicked();
-
     void on_checkBoxPETool_toggled(bool checked);
-
     void on_checkBoxJoiner_toggled(bool checked);
+    void on_checkBoxNE_toggled(bool checked);
+    void on_checkBoxText_toggled(bool checked);
+    void on_checkBoxLE_toggled(bool checked);
+    void on_checkBoxLX_toggled(bool checked);
+    void on_checkBoxAPKTool_toggled(bool checked);
 
 private:
     Ui::GuiMainWindow *ui;

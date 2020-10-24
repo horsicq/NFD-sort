@@ -130,14 +130,18 @@ void GuiMainWindow::_scan()
     options.stFileTypes.clear();
 
     if(ui->checkBoxBinary->isChecked())             options.stFileTypes.insert(XBinary::FT_BINARY);
+    if(ui->checkBoxText->isChecked())               options.stFileTypes.insert(XBinary::FT_TEXT);
     if(ui->checkBoxMSDOS->isChecked())              options.stFileTypes.insert(XBinary::FT_MSDOS);
+    if(ui->checkBoxNE->isChecked())                 options.stFileTypes.insert(XBinary::FT_NE);
+    if(ui->checkBoxLE->isChecked())                 options.stFileTypes.insert(XBinary::FT_LE);
+    if(ui->checkBoxLX->isChecked())                 options.stFileTypes.insert(XBinary::FT_LX);
     if(ui->checkBoxPE32->isChecked())               options.stFileTypes.insert(XBinary::FT_PE32);
     if(ui->checkBoxPE64->isChecked())               options.stFileTypes.insert(XBinary::FT_PE64);
     if(ui->checkBoxELF32->isChecked())              options.stFileTypes.insert(XBinary::FT_ELF32);
     if(ui->checkBoxELF64->isChecked())              options.stFileTypes.insert(XBinary::FT_ELF64);
     if(ui->checkBoxMACHO32->isChecked())            options.stFileTypes.insert(XBinary::FT_MACH32);
     if(ui->checkBoxMACHO64->isChecked())            options.stFileTypes.insert(XBinary::FT_MACH64);
-    if(ui->checkBoxZIP->isChecked())                options.stFileTypes.insert(XBinary::FT_ZIP);
+    if(ui->checkBoxArchive->isChecked())            options.stFileTypes.insert(XBinary::FT_ARCHIVE);
     if(ui->checkBoxJAR->isChecked())                options.stFileTypes.insert(XBinary::FT_JAR);
     if(ui->checkBoxAPK->isChecked())                options.stFileTypes.insert(XBinary::FT_APK);
     if(ui->checkBoxDEX->isChecked())                options.stFileTypes.insert(XBinary::FT_DEX);
@@ -146,7 +150,7 @@ void GuiMainWindow::_scan()
 
     options.bAllTypes=ui->checkBoxAllTypes->isChecked();
 
-    if(ui->checkBoxArchive->isChecked())            options.stTypes.insert(SpecAbstract::RECORD_TYPE_ARCHIVE);
+    if(ui->checkBoxAPKTool->isChecked())            options.stTypes.insert(SpecAbstract::RECORD_TYPE_APKTOOL);
     if(ui->checkBoxCertificate->isChecked())        options.stTypes.insert(SpecAbstract::RECORD_TYPE_CERTIFICATE);
     if(ui->checkBoxCompiler->isChecked())           options.stTypes.insert(SpecAbstract::RECORD_TYPE_COMPILER);
     if(ui->checkBoxConverter->isChecked())          options.stTypes.insert(SpecAbstract::RECORD_TYPE_CONVERTER);
@@ -201,14 +205,18 @@ void GuiMainWindow::_scan()
 void GuiMainWindow::on_checkBoxAllFileTypes_toggled(bool checked)
 {
     ui->checkBoxBinary->setChecked(checked);
+    ui->checkBoxText->setChecked(checked);
     ui->checkBoxMSDOS->setChecked(checked);
+    ui->checkBoxNE->setChecked(checked);
+    ui->checkBoxLE->setChecked(checked);
+    ui->checkBoxLX->setChecked(checked);
     ui->checkBoxPE32->setChecked(checked);
     ui->checkBoxPE64->setChecked(checked);
     ui->checkBoxELF32->setChecked(checked);
     ui->checkBoxELF64->setChecked(checked);
     ui->checkBoxMACHO32->setChecked(checked);
     ui->checkBoxMACHO64->setChecked(checked);
-    ui->checkBoxZIP->setChecked(checked);
+    ui->checkBoxArchive->setChecked(checked);
     ui->checkBoxJAR->setChecked(checked);
     ui->checkBoxAPK->setChecked(checked);
     ui->checkBoxDEX->setChecked(checked);
@@ -336,7 +344,7 @@ void GuiMainWindow::on_checkBoxDEX_toggled(bool checked)
 
 void GuiMainWindow::on_checkBoxAllTypes_toggled(bool checked)
 {
-    ui->checkBoxArchive->setChecked(checked);
+    ui->checkBoxAPKTool->setChecked(checked);
     ui->checkBoxCertificate->setChecked(checked);
     ui->checkBoxCompiler->setChecked(checked);
     ui->checkBoxConverter->setChecked(checked);
@@ -371,7 +379,7 @@ void GuiMainWindow::on_checkBoxArchive_toggled(bool checked)
 
     if(!checked)
     {
-        ui->checkBoxAllTypes->setChecked(false);
+        ui->checkBoxAllFileTypes->setChecked(false);
     }
 }
 
@@ -632,6 +640,57 @@ void GuiMainWindow::on_checkBoxPETool_toggled(bool checked)
 }
 
 void GuiMainWindow::on_checkBoxJoiner_toggled(bool checked)
+{
+    QSignalBlocker blocker(ui->checkBoxAllTypes);
+
+    if(!checked)
+    {
+        ui->checkBoxAllTypes->setChecked(false);
+    }
+}
+
+
+void GuiMainWindow::on_checkBoxNE_toggled(bool checked)
+{
+    QSignalBlocker blocker(ui->checkBoxAllTypes);
+
+    if(!checked)
+    {
+        ui->checkBoxAllFileTypes->setChecked(false);
+    }
+}
+
+void GuiMainWindow::on_checkBoxText_toggled(bool checked)
+{
+    QSignalBlocker blocker(ui->checkBoxAllTypes);
+
+    if(!checked)
+    {
+        ui->checkBoxAllFileTypes->setChecked(false);
+    }
+}
+
+void GuiMainWindow::on_checkBoxLE_toggled(bool checked)
+{
+    QSignalBlocker blocker(ui->checkBoxAllTypes);
+
+    if(!checked)
+    {
+        ui->checkBoxAllFileTypes->setChecked(false);
+    }
+}
+
+void GuiMainWindow::on_checkBoxLX_toggled(bool checked)
+{
+    QSignalBlocker blocker(ui->checkBoxAllTypes);
+
+    if(!checked)
+    {
+        ui->checkBoxAllFileTypes->setChecked(false);
+    }
+}
+
+void GuiMainWindow::on_checkBoxAPKTool_toggled(bool checked)
 {
     QSignalBlocker blocker(ui->checkBoxAllTypes);
 
