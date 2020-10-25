@@ -302,15 +302,6 @@ void GuiMainWindow::on_checkBoxMACHO64_toggled(bool checked)
     }
 }
 
-void GuiMainWindow::on_checkBoxZIP_toggled(bool checked)
-{
-    QSignalBlocker blocker(ui->checkBoxAllFileTypes);
-
-    if(!checked)
-    {
-        ui->checkBoxAllFileTypes->setChecked(false);
-    }
-}
 
 void GuiMainWindow::on_checkBoxJAR_toggled(bool checked)
 {
