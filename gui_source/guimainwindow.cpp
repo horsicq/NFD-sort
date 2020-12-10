@@ -139,8 +139,8 @@ void GuiMainWindow::_scan()
     if(ui->checkBoxPE64->isChecked())               options.stFileTypes.insert(XBinary::FT_PE64);
     if(ui->checkBoxELF32->isChecked())              options.stFileTypes.insert(XBinary::FT_ELF32);
     if(ui->checkBoxELF64->isChecked())              options.stFileTypes.insert(XBinary::FT_ELF64);
-    if(ui->checkBoxMACHO32->isChecked())            options.stFileTypes.insert(XBinary::FT_MACH32);
-    if(ui->checkBoxMACHO64->isChecked())            options.stFileTypes.insert(XBinary::FT_MACH64);
+    if(ui->checkBoxMACHO32->isChecked())            options.stFileTypes.insert(XBinary::FT_MACHO32);
+    if(ui->checkBoxMACHO64->isChecked())            options.stFileTypes.insert(XBinary::FT_MACHO64);
     if(ui->checkBoxArchive->isChecked())            options.stFileTypes.insert(XBinary::FT_ARCHIVE);
     if(ui->checkBoxJAR->isChecked())                options.stFileTypes.insert(XBinary::FT_JAR);
     if(ui->checkBoxAPK->isChecked())                options.stFileTypes.insert(XBinary::FT_APK);
