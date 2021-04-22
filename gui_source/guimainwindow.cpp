@@ -70,6 +70,7 @@ GuiMainWindow::GuiMainWindow(QWidget *parent) :
     }
 
     options.bDebug=true;
+    options.bIsTest=true;
 }
 
 GuiMainWindow::~GuiMainWindow()
