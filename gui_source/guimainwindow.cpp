@@ -146,6 +146,7 @@ void GuiMainWindow::_scan()
     if(ui->checkBoxJAR->isChecked())                options.stFileTypes.insert(XBinary::FT_JAR);
     if(ui->checkBoxAPK->isChecked())                options.stFileTypes.insert(XBinary::FT_APK);
     if(ui->checkBoxDEX->isChecked())                options.stFileTypes.insert(XBinary::FT_DEX);
+    if(ui->checkBoxIPA->isChecked())                options.stFileTypes.insert(XBinary::FT_IPA);
 
     options.stTypes.clear();
 
@@ -221,6 +222,7 @@ void GuiMainWindow::on_checkBoxAllFileTypes_toggled(bool checked)
     ui->checkBoxJAR->setChecked(checked);
     ui->checkBoxAPK->setChecked(checked);
     ui->checkBoxDEX->setChecked(checked);
+    ui->checkBoxIPA->setChecked(checked);
 }
 
 void GuiMainWindow::on_checkBoxBinary_toggled(bool checked)
