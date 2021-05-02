@@ -264,7 +264,7 @@ void ScanProgress::_processFile(QString sFileName)
 
         SpecAbstract::SCAN_RESULT scanResult=StaticScan::processFile(currentStats.sStatus,&options);
 
-        QString _sBaseFileName=XBinary::getBaseFileName(scanResult.sFileName);
+        QString _sBaseFileName=QFileInfo(scanResult.sFileName).fileName();
 
         if((_pOptions->fileFormat==FF_MD5)||(_pOptions->fileFormat==FF_MD5_ORIGINAL))
         {
