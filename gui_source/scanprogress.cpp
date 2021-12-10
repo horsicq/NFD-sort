@@ -412,11 +412,11 @@ QString ScanProgress::createPath(ScanProgress::CF copyFormat, SpecAbstract::SCAN
     }
     else if(copyFormat==ScanProgress::CF_FT_ARCH_TYPE_NAME)
     {
-        sResult=XBinary::fileTypeIdToString(ss.id.fileType)+QDir::separator()+ss.sArch;
+        sResult=XBinary::fileTypeIdToString(ss.id.fileType)+QDir::separator()+ss.id.sArch;
     }
     else if(copyFormat==ScanProgress::CF_ARCH_FT_TYPE_NAME)
     {
-        sResult=ss.sArch+QDir::separator()+XBinary::fileTypeIdToString(ss.id.fileType);
+        sResult=ss.id.sArch+QDir::separator()+XBinary::fileTypeIdToString(ss.id.fileType);
     }
 
     return sResult;
