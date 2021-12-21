@@ -106,7 +106,6 @@
           <widget class="QPushButton" name="pushButtonOpenDirectory">
            <property name="font">
             <font>
-             <weight>75</weight>
              <bold>true</bold>
             </font>
            </property>
@@ -119,7 +118,6 @@
           <widget class="QPushButton" name="pushButtonScan">
            <property name="font">
             <font>
-             <weight>75</weight>
              <bold>true</bold>
             </font>
            </property>
@@ -311,27 +309,6 @@
            </property>
           </widget>
          </item>
-         <item row="8" column="3">
-          <widget class="QCheckBox" name="checkBoxTool">
-           <property name="text">
-            <string>Tool</string>
-           </property>
-          </widget>
-         </item>
-         <item row="7" column="3">
-          <widget class="QCheckBox" name="checkBoxStub">
-           <property name="text">
-            <string>Stub</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="3">
-          <widget class="QCheckBox" name="checkBoxSFX">
-           <property name="text">
-            <string>SFX</string>
-           </property>
-          </widget>
-         </item>
          <item row="8" column="1">
           <widget class="QCheckBox" name="checkBoxInstallerData">
            <property name="text">
@@ -360,13 +337,6 @@
            </property>
           </widget>
          </item>
-         <item row="6" column="3">
-          <widget class="QCheckBox" name="checkBoxSourceCode">
-           <property name="text">
-            <string>Source code</string>
-           </property>
-          </widget>
-         </item>
          <item row="14" column="0">
           <widget class="QCheckBox" name="checkBoxDongleProtection">
            <property name="text">
@@ -388,52 +358,10 @@
            </property>
           </widget>
          </item>
-         <item row="5" column="3">
-          <widget class="QCheckBox" name="checkBoxSignTool">
-           <property name="text">
-            <string>Sign tool</string>
-           </property>
-          </widget>
-         </item>
          <item row="5" column="0">
           <widget class="QCheckBox" name="checkBoxCompiler">
            <property name="text">
             <string>Compiler</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="3">
-          <widget class="QCheckBox" name="checkBoxSFXData">
-           <property name="text">
-            <string>SFX data</string>
-           </property>
-          </widget>
-         </item>
-         <item row="14" column="2">
-          <widget class="QCheckBox" name="checkBoxProtectorData">
-           <property name="text">
-            <string>Protector data</string>
-           </property>
-          </widget>
-         </item>
-         <item row="8" column="2">
-          <widget class="QCheckBox" name="checkBoxProtector">
-           <property name="text">
-            <string>Protector</string>
-           </property>
-          </widget>
-         </item>
-         <item row="7" column="2">
-          <widget class="QCheckBox" name="checkBoxPETool">
-           <property name="text">
-            <string>PE tool</string>
-           </property>
-          </widget>
-         </item>
-         <item row="6" column="2">
-          <widget class="QCheckBox" name="checkBoxPacker">
-           <property name="text">
-            <string>Packer</string>
            </property>
           </widget>
          </item>
@@ -469,6 +397,83 @@
           <widget class="QCheckBox" name="checkBoxAPKTool">
            <property name="text">
             <string>APK tool</string>
+           </property>
+          </widget>
+         </item>
+         <item row="14" column="3">
+          <widget class="QCheckBox" name="checkBoxTool">
+           <property name="text">
+            <string>Tool</string>
+           </property>
+          </widget>
+         </item>
+         <item row="8" column="3">
+          <widget class="QCheckBox" name="checkBoxStub">
+           <property name="text">
+            <string>Stub</string>
+           </property>
+          </widget>
+         </item>
+         <item row="7" column="3">
+          <widget class="QCheckBox" name="checkBoxSourceCode">
+           <property name="text">
+            <string>Source code</string>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="3">
+          <widget class="QCheckBox" name="checkBoxSignTool">
+           <property name="text">
+            <string>Sign tool</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="3">
+          <widget class="QCheckBox" name="checkBoxSFXData">
+           <property name="text">
+            <string>SFX data</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="3">
+          <widget class="QCheckBox" name="checkBoxSFX">
+           <property name="text">
+            <string>SFX</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="3">
+          <widget class="QCheckBox" name="checkBoxProtectorData">
+           <property name="text">
+            <string>Protector data</string>
+           </property>
+          </widget>
+         </item>
+         <item row="14" column="2">
+          <widget class="QCheckBox" name="checkBoxProtector">
+           <property name="text">
+            <string>Protector</string>
+           </property>
+          </widget>
+         </item>
+         <item row="8" column="2">
+          <widget class="QCheckBox" name="checkBoxPETool">
+           <property name="text">
+            <string>PE tool</string>
+           </property>
+          </widget>
+         </item>
+         <item row="7" column="2">
+          <widget class="QCheckBox" name="checkBoxPacker">
+           <property name="text">
+            <string>Packer</string>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="2">
+          <widget class="QCheckBox" name="checkBoxOperationSystem">
+           <property name="text">
+            <string>Operation system</string>
            </property>
           </widget>
          </item>

@@ -1,24 +1,23 @@
-// copyright (c) 2019-2021 hors<horsicq@gmail.com>
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-//
-
+/* Copyright (c) 2019-2021 hors<horsicq@gmail.com>
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 #include "guimainwindow.h"
 #include "ui_guimainwindow.h"
 
@@ -169,6 +168,7 @@ void GuiMainWindow::_scan()
     if(ui->checkBoxLibrary->isChecked())            options.stTypes.insert(SpecAbstract::RECORD_TYPE_LIBRARY);
     if(ui->checkBoxLinker->isChecked())             options.stTypes.insert(SpecAbstract::RECORD_TYPE_LINKER);
     if(ui->checkBoxNETObfuscator->isChecked())      options.stTypes.insert(SpecAbstract::RECORD_TYPE_NETOBFUSCATOR);
+    if(ui->checkBoxOperationSystem->isChecked())    options.stTypes.insert(SpecAbstract::RECORD_TYPE_OPERATIONSYSTEM);
     if(ui->checkBoxPacker->isChecked())             options.stTypes.insert(SpecAbstract::RECORD_TYPE_PACKER);
     if(ui->checkBoxPETool->isChecked())             options.stTypes.insert(SpecAbstract::RECORD_TYPE_PETOOL);
     if(ui->checkBoxProtector->isChecked())          options.stTypes.insert(SpecAbstract::RECORD_TYPE_PROTECTOR);
@@ -355,6 +355,7 @@ void GuiMainWindow::on_checkBoxAllTypes_toggled(bool checked)
     ui->checkBoxLibrary->setChecked(checked);
     ui->checkBoxLinker->setChecked(checked);
     ui->checkBoxNETObfuscator->setChecked(checked);
+    ui->checkBoxOperationSystem->setChecked(checked);
     ui->checkBoxPacker->setChecked(checked);
     ui->checkBoxPETool->setChecked(checked);
     ui->checkBoxProtector->setChecked(checked);
@@ -693,3 +694,14 @@ void GuiMainWindow::on_checkBoxAPKTool_toggled(bool checked)
         ui->checkBoxAllTypes->setChecked(false);
     }
 }
+
+void GuiMainWindow::on_checkBoxOperationSystem_toggled(bool checked)
+{
+    QSignalBlocker blocker(ui->checkBoxAllTypes);
+
+    if(!checked)
+    {
+        ui->checkBoxAllTypes->setChecked(false);
+    }
+}
+
