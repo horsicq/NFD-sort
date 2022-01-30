@@ -78,6 +78,8 @@ void DialogScanProgress::on_pushButtonCancel_clicked()
 
 void DialogScanProgress::onCompleted(qint64 nElapsed)
 {
+    Q_UNUSED(nElapsed)
+
     bIsRun=false;
     pTimer->stop();
     this->close();
