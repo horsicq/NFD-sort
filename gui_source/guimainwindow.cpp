@@ -27,7 +27,7 @@ GuiMainWindow::GuiMainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    setWindowTitle(QString("%1 v%2").arg(X_APPLICATIONNAME).arg(X_APPLICATIONVERSION));
+    setWindowTitle(QString("%1 v%2").arg(X_APPLICATIONNAME,X_APPLICATIONVERSION));
 
     options={0};
 
