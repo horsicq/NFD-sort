@@ -259,7 +259,10 @@ void ScanProgress::_processFile(QString sFileName)
         options.bHeuristicScan=_pOptions->bHeuristic;
         options.bSubdirectories=_pOptions->bSubdirectories;
         options.bIsTest=_pOptions->bIsTest;
+
+#ifdef Q_OS_LINUX
         options.bIsTest=true;
+#endif
 
         SpecAbstract::SCAN_RESULT scanResult=StaticScan::processFile(currentStats.sStatus,&options);
 
