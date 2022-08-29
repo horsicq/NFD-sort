@@ -71,6 +71,7 @@ public:
         bool bDeepScan;
         bool bSubdirectories;
         bool bHeuristic;
+        bool bVerbose;
         QSet<XBinary::FT> stFileTypes;
         bool bAllTypes;
         QSet<SpecAbstract::RECORD_TYPE> stTypes;

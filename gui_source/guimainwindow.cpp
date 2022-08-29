@@ -184,6 +184,7 @@ void GuiMainWindow::_scan()
     options.bDeepScan=ui->checkBoxDeepScan->isChecked();
     options.bSubdirectories=ui->checkBoxScanSubdirectories->isChecked();
     options.bHeuristic=ui->checkBoxHeuristicScan->isChecked();
+    options.bVerbose=ui->checkBoxVerbose->isChecked();
 
     options.copyFormat=(ScanProgress::CF)ui->comboBoxCopyFormat->currentIndex();
     options.copyType=(ScanProgress::CT)ui->comboBoxCopyType->currentIndex();
