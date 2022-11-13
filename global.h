@@ -26,4 +26,4 @@
 #define X_ORGANIZATIONNAME "NTInfo"
 #define X_ORGANIZATIONDOMAIN "ntinfo.biz"
 
-#endif // GLOBAL_H
+#endif  // GLOBAL_H

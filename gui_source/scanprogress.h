@@ -21,52 +21,47 @@
 #ifndef SCANPROGRESS_H
 #define SCANPROGRESS_H
 
+#include <QFutureWatcher>
+#include <QMutex>
+#include <QMutexLocker>
 #include <QObject>
+#include <QSemaphore>
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QSqlQuery>
-#include "staticscan.h"
-#include <QMutex>
-#include <QMutexLocker>
-#include <QFutureWatcher>
 #include <QtConcurrent>
-#include <QSemaphore>
 
-class ScanProgress : public QObject
-{
+#include "staticscan.h"
+
+class ScanProgress : public QObject {
     Q_OBJECT
 public:
-    enum CF
-    {
-        CF_FT_TYPE_NAME=0,
+    enum CF {
+        CF_FT_TYPE_NAME = 0,
         CF_ARCH_FT_TYPE_NAME,
         CF_FT_ARCH_TYPE_NAME
     };
 
-    enum CT
-    {
-        CT_IDENT=0,
+    enum CT {
+        CT_IDENT = 0,
         CT_IDENT_UNK,
         CT_UNK
     };
 
-    enum UP
-    {
-        UP_NONE=0,
+    enum UP {
+        UP_NONE = 0,
         UP_EP_BYTES,
         UP_HEADER_BYTES,
         UP_OVERLAY_BYTES
     };
 
-    enum FF
-    {
-        FF_ORIGINAL=0,
+    enum FF {
+        FF_ORIGINAL = 0,
         FF_MD5,
         FF_MD5_ORIGINAL
     };
 
-    struct SCAN_OPTIONS
-    {
+    struct SCAN_OPTIONS {
         bool bRecursive;
         bool bDeepScan;
         bool bSubdirectories;
@@ -86,8 +81,7 @@ public:
         FF fileFormat;
         bool bRemoveCopied;
     };
-    struct STATS
-    {
+    struct STATS {
         qint32 nTotal;
         qint32 nCurrent;
         qint64 nElapsed;
@@ -95,12 +89,12 @@ public:
         qint32 nNumberOfThreads;
     };
 
-    explicit ScanProgress(QObject *parent=nullptr);
+    explicit ScanProgress(QObject *parent = nullptr);
 
-    void setData(QString sDirectoryName,ScanProgress::SCAN_OPTIONS *pOptions);
+    void setData(QString sDirectoryName, ScanProgress::SCAN_OPTIONS *pOptions);
 
     quint32 getFileCount(quint32 nCRC);
-    void setFileCount(quint32 nCRC,quint32 nCount);
+    void setFileCount(quint32 nCRC, quint32 nCount);
     void setFileStat(QString sFileName, QString sTimeCount, QString sDate);
     void createTables();
     QString getCurrentFileName();
@@ -125,10 +119,10 @@ public slots:
     void process();
     void stop();
     STATS getCurrentStats();
-    static bool createDatabase(QSqlDatabase *pDb,QString sDatabaseName);
+    static bool createDatabase(QSqlDatabase *pDb, QString sDatabaseName);
 
 private:
-    const int N_MAXNUMBEROFTHREADS=8;
+    const int N_MAXNUMBEROFTHREADS = 8;
     QString _sDirectoryName;
     SCAN_OPTIONS *_pOptions;
     bool bIsStop;
@@ -138,4 +132,4 @@ private:
     QSemaphore *pSemaphore;
 };
 
-#endif // SCANPROGRESS_H
+#endif  // SCANPROGRESS_H

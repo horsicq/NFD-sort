@@ -18,17 +18,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#include "guimainwindow.h"
 #include <QApplication>
 #include <QStyleFactory>
 
-int main(int argc, char *argv[])
-{
+#include "guimainwindow.h"
+
+int main(int argc, char *argv[]) {
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 #ifdef Q_OS_MAC
 #ifndef QT_DEBUG
-    QString sLibraryPath=QString(argv[0]);
-    sLibraryPath=sLibraryPath.remove("MacOS/nfd-sort")+"PlugIns";
+    QString sLibraryPath = QString(argv[0]);
+    sLibraryPath = sLibraryPath.remove("MacOS/nfd-sort") + "PlugIns";
     QCoreApplication::setLibraryPaths(QStringList(sLibraryPath));
 #endif
 #endif
