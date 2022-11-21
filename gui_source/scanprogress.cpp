@@ -20,8 +20,7 @@
  */
 #include "scanprogress.h"
 
-ScanProgress::ScanProgress(QObject *parent)
-    : QObject(parent)
+ScanProgress::ScanProgress(QObject *parent) : QObject(parent)
 {
     bIsStop = false;
     _pOptions = nullptr;
