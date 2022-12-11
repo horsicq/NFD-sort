@@ -122,7 +122,7 @@ public slots:
     static bool createDatabase(QSqlDatabase *pDb, QString sDatabaseName);
 
 private:
-    //const int N_MAXNUMBEROFTHREADS = 8;
+    // const int N_MAXNUMBEROFTHREADS = 8;
     const int N_MAXNUMBEROFTHREADS = 1;
     QString _sDirectoryName;
     SCAN_OPTIONS *_pOptions;
