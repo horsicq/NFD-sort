@@ -66,7 +66,7 @@ GuiMainWindow::GuiMainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::
         exit(1);
     }
 
-    options.bDebug = true;
+    options.bDebug = false;
     options.bIsTest = true;
 }
 
