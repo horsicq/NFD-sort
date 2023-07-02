@@ -23,7 +23,7 @@ FORMS += \
 
 !contains(XCONFIG, staticscan) {
     XCONFIG += staticscan
-    include(../StaticScan/staticscan.pri)
+    include(../../_mylibs/SpecAbstract/staticscan.pri)
 }
 
 include(../build.pri)
