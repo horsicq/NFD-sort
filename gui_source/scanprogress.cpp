@@ -430,7 +430,7 @@ void ScanProgress::process()
                 break;
             }
 
-            QThread::msleep(500);
+            QThread::msleep(50);
         }
     }
 
