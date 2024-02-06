@@ -16,8 +16,7 @@ set GUIEXE=nfd-sort.exe
 set ZIP_NAME=%BUILD_NAME%_%RELEASE_VERSION%
 set RES_FILE=rsrc
 
-cd gui_source
-%QT_PATH%\bin\qmake.exe gui_source.pro -r -spec %QT_SPEC% "CONFIG+=release"
+%QT_PATH%\bin\qmake.exe NFD_sort_source.pro -r -spec %QT_SPEC% "CONFIG+=release"
 
 nmake Makefile.Release clean
 nmake
