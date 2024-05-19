@@ -126,7 +126,7 @@ private:
 #ifdef Q_OS_WIN
     const int N_MAXNUMBEROFTHREADS = 8;
 #else
-    const int N_MAXNUMBEROFTHREADS = 8;
+    const int N_MAXNUMBEROFTHREADS = 1;
 #endif
     QString _sDirectoryName;
     SCAN_OPTIONS *_pOptions;

@@ -213,6 +213,8 @@ void ScanProgress::endTransaction()
 
 void ScanProgress::_processFile(QString sFileName)
 {
+    qDebug("%s", sFileName.toUtf8().data());
+
     pSemaphore->acquire();
 
     currentStats.nCurrent++;
