@@ -107,7 +107,7 @@ public:
 
     void _processFile(QString sFileName);
 
-    static QString createPath(CF copyFormat, SpecAbstract::SCAN_STRUCT ss);
+    static QString createPath(CF copyFormat, XScanEngine::SCANSTRUCT ss);
 
 private slots:
     void scan_finished();

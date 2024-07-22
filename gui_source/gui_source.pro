@@ -21,9 +21,9 @@ FORMS += \
         guimainwindow.ui \
         dialogscanprogress.ui
 
-!contains(XCONFIG, staticscan) {
-    XCONFIG += staticscan
-    include(../SpecAbstract/staticscan.pri)
+!contains(XCONFIG, specabstract) {
+    XCONFIG += specabstract
+    include(../../_mylibs/SpecAbstract/specabstract.pri)
 }
 
 include(../build.pri)

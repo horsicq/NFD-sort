@@ -246,7 +246,7 @@ void ScanProgress::_processFile(QString sFileName)
         options.bIsTest = true;
 #endif
 
-        SpecAbstract::SCAN_RESULT scanResult = StaticScan::processFile(currentStats.sStatus, &options);
+        XScanEngine::SCAN_RESULT scanResult = SpecAbstract().scanFile(currentStats.sStatus, &options);
 
         QString _sBaseFileName = QFileInfo(scanResult.sFileName).fileName();
 
@@ -267,14 +267,14 @@ void ScanProgress::_processFile(QString sFileName)
 
         if (nCount) {
             for (int i = 0; i < nCount; i++) {
-                SpecAbstract::SCAN_STRUCT ss = scanResult.listRecords.at(i);
+                XScanEngine::SCANSTRUCT ss = scanResult.listRecords.at(i);
 
                 if (_pOptions->stFileTypes.contains(ss.id.fileType)) {
-                    if ((_pOptions->stTypes.contains(ss.type)) || (_pOptions->bAllTypes)) {
+                    if ((_pOptions->stTypes.contains((SpecAbstract::RECORD_TYPE)ss.nType)) || (_pOptions->bAllTypes)) {
                         bIdentified = true;
 
                         if ((_pOptions->copyType == CT_IDENT) || (_pOptions->copyType == CT_IDENT_UNK)) {
-                            QString sResult = SpecAbstract::recordNameIdToString(ss.name);
+                            QString sResult = SpecAbstract::recordNameIdToString(ss.nName);
 
                             if (ss.sVersion != "") {
                                 sResult += QString("(%1)").arg(ss.sVersion);
@@ -300,7 +300,7 @@ void ScanProgress::_processFile(QString sFileName)
 
                             if (bCopy) {
                                 QString _sFileName = _pOptions->sResultDirectory + QDir::separator() + createPath(_pOptions->copyFormat, ss) + QDir::separator() +
-                                                     SpecAbstract::recordTypeIdToString(ss.type) + QDir::separator() + sResult;
+                                                     SpecAbstract::recordTypeIdToString(ss.nType) + QDir::separator() + sResult;
 
                                 XBinary::createDirectory(_sFileName);
 
@@ -368,7 +368,7 @@ void ScanProgress::_processFile(QString sFileName)
     pSemaphore->release();
 }
 
-QString ScanProgress::createPath(ScanProgress::CF copyFormat, SpecAbstract::SCAN_STRUCT ss)
+QString ScanProgress::createPath(ScanProgress::CF copyFormat, XScanEngine::SCANSTRUCT ss)
 {
     QString sResult;
 
