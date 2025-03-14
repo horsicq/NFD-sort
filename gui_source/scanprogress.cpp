@@ -213,9 +213,11 @@ void ScanProgress::endTransaction()
 
 void ScanProgress::_processFile(QString sFileName)
 {
-    qDebug("%s", sFileName.toUtf8().data());
+    // qDebug("%s", sFileName.toUtf8().data());
 
-    pSemaphore->acquire();
+    if (N_MAXNUMBEROFTHREADS > 1) {
+        pSemaphore->acquire();
+    }
 
     currentStats.nCurrent++;
     currentStats.sStatus = sFileName;
@@ -365,7 +367,9 @@ void ScanProgress::_processFile(QString sFileName)
         }
     }
 
-    pSemaphore->release();
+    if (N_MAXNUMBEROFTHREADS > 1) {
+        pSemaphore->release();
+    }
 }
 
 QString ScanProgress::createPath(ScanProgress::CF copyFormat, XScanEngine::SCANSTRUCT ss)
@@ -390,7 +394,10 @@ void ScanProgress::scan_finished()
 
 void ScanProgress::process()
 {
-    pSemaphore = new QSemaphore(N_MAXNUMBEROFTHREADS);
+    if (N_MAXNUMBEROFTHREADS > 1) {
+        pSemaphore = new QSemaphore(N_MAXNUMBEROFTHREADS);
+    }
+
     pElapsedTimer = new QElapsedTimer;
     pElapsedTimer->start();
 
@@ -421,33 +428,41 @@ void ScanProgress::process()
             break;
         }
 
-        QFuture<void> future = QtConcurrent::run(this, &ScanProgress::_processFile, sFileName);
+        if (N_MAXNUMBEROFTHREADS > 1) {
+            QFuture<void> future = QtConcurrent::run(this, &ScanProgress::_processFile, sFileName);
 
-        QThread::msleep(100);
+            QThread::msleep(100);
 
+            while (true) {
+                int nAvailable = pSemaphore->available();
+                currentStats.nNumberOfThreads = N_MAXNUMBEROFTHREADS - nAvailable;
+                if (nAvailable) {
+                    break;
+                }
+
+                QThread::msleep(50);
+            }
+        } else {
+            _processFile(sFileName);
+        }
+    }
+
+    if (N_MAXNUMBEROFTHREADS > 1) {
         while (true) {
             int nAvailable = pSemaphore->available();
             currentStats.nNumberOfThreads = N_MAXNUMBEROFTHREADS - nAvailable;
-            if (nAvailable) {
+
+            if (nAvailable == N_MAXNUMBEROFTHREADS) {
                 break;
             }
 
-            QThread::msleep(50);
+            QThread::msleep(1000);
         }
     }
 
-    while (true) {
-        int nAvailable = pSemaphore->available();
-        currentStats.nNumberOfThreads = N_MAXNUMBEROFTHREADS - nAvailable;
-
-        if (nAvailable == N_MAXNUMBEROFTHREADS) {
-            break;
-        }
-
-        QThread::msleep(1000);
+    if (N_MAXNUMBEROFTHREADS > 1) {
+        delete pSemaphore;
     }
-
-    delete pSemaphore;
 
     emit completed(pElapsedTimer->elapsed());
     delete pElapsedTimer;
